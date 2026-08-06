@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_subscriptions"
+        android:title="@string/import_link"
+        android:icon="@drawable/ic_import"
+        app:actionLayout="@layout/action_import"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_test_latency"
+        android:title="@string/test_all_nodes"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_filter_nodes"
+        android:title="@string/filter_protocol"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_nodes"
+        android:title="@string/sort_nodes"
+        app:showAsAction="never" />
+</menu>

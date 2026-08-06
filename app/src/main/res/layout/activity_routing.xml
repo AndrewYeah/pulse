@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
+    <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="@dimen/toolbar_height" android:background="@color/background" app:navigationIcon="@drawable/ic_arrow_back" app:title="@string/routing" />
+    <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="@dimen/page_horizontal_inset">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:layout_marginBottom="6dp" android:text="@string/basic_routing" android:textColor="@color/text_primary" android:textStyle="bold" />
+            <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content">
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingHorizontal="12dp">
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/cbChinaDirect" style="@style/Widget.Pulse.Switch" android:text="@string/china_direct" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/cbLanDirect" style="@style/Widget.Pulse.Switch" android:text="@string/private_direct" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/cbBlockAds" style="@style/Widget.Pulse.Switch" android:text="@string/block_ads" />
+                    <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/cbSkipCertVerify" style="@style/Widget.Pulse.Switch" android:text="@string/skip_tls_verify" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:layout_marginTop="18dp" android:layout_marginBottom="6dp" android:text="@string/routing_groups_order" android:textColor="@color/text_primary" android:textStyle="bold" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerGroups" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:layout_marginTop="18dp" android:layout_marginBottom="6dp" android:text="@string/custom_rules" android:textColor="@color/text_primary" android:textStyle="bold" />
+            <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerRules" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" />
+            <com.google.android.material.button.MaterialButton android:id="@+id/btnAddRule" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_sm" android:text="@string/add_rule" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnRuleSets" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginEnd="6dp" android:text="@string/rule_set_status" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnPerAppSettings" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="@string/per_app" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

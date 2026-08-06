@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/space_xl">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvDialogTitle"
+        android:text="@string/add_subscription"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_body"
+        android:layout_marginBottom="@dimen/space_md" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Pulse.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/subscription_name_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSubName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Pulse.Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_sm"
+        android:hint="@string/subscription_url_hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSubUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:maxLines="4" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

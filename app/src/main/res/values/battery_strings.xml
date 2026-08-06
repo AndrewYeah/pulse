@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="battery_optimization">后台运行与电池</string>
+    <string name="battery_unrestricted">已允许不受限制</string>
+    <string name="battery_optimized">系统可能限制后台运行</string>
+    <string name="battery_open_settings">打开系统设置</string>
+    <string name="battery_guidance_title">后台运行建议</string>
+    <string name="node_filter_all">全部协议</string>
+    <string name="node_sort_name">按名称</string>
+    <string name="node_sort_protocol">按协议</string>
+    <string name="node_sort_latency">按延迟</string>
+    <string name="node_sort_updated">按测速时间</string>
+</resources>

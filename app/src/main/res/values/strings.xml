@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pulse</string>
+    <string name="config_manager">配置管理</string>
+    <string name="edit_config">编辑配置</string>
+    <string name="subscription_management">订阅管理</string>
+    <string name="invalid_dns_address">请输入有效的 HTTPS/TLS/QUIC DNS 地址</string>
+    <string name="subscription_https_required">订阅链接必须使用 HTTPS</string>
+    <string name="invalid_rule_pattern">匹配值格式无效</string>
+    <string name="node_switch_failed">节点切换失败，当前节点未改变</string>
+    <string name="import_link">导入链接</string><string name="filter_protocol">筛选协议</string><string name="sort_nodes">排序节点</string>
+    <string name="status_stopped">未连接</string>
+    <string name="status_connecting">正在连接…</string>
+    <string name="status_running">已连接</string>
+    <string name="status_error">连接失败</string>
+    <string name="btn_start">连接</string>
+    <string name="btn_stop">断开</string>
+    <string name="connection_success">连接成功</string>
+    <string name="connection_failed_hint">连接失败，请检查节点配置或网络</string>
+    <string name="vpn_permission_required">需要 VPN 权限才能建立连接</string>
+    <string name="notification_channel_name">VPN 代理状态</string>
+    <string name="notification_channel_desc">显示 VPN 代理的运行状态</string>
+    <string name="run_duration">运行时长</string>
+    <string name="connections">连接</string>
+    <string name="traffic_total">总流量</string>
+    <string name="speed">实时速率</string>
+    <string name="current_profile">当前节点</string>
+    <string name="mode_rule">规则</string>
+    <string name="mode_global">全局</string>
+    <string name="profiles">节点</string>
+    <string name="subscriptions">订阅</string>
+    <string name="dns_and_routing">DNS 与分流</string>
+    <string name="routing">分流</string>
+    <string name="general_settings">通用设置</string>
+    <string name="text_to_qr">文本转二维码</string><string name="proxy_leak_check">代理泄露检测</string><string name="dns_check">DNS 检测</string><string name="test_url">测速 URL</string><string name="latency_check">延迟检测</string><string name="language">语言</string><string name="about">关于</string><string name="language_chinese">简体中文</string><string name="language_english">English</string><string name="language_russian">Русский</string><string name="language_persian">فارسی</string><string name="language_azerbaijani">Azərbaycanca</string><string name="language_arabic">العربية</string>
+    <string name="per_app">按应用分流</string>
+    <string name="diagnostics">日志与诊断</string>
+    <string name="settings">设置</string>
+    <string name="no_profile">尚未添加代理节点</string>
+    <string name="select_profile">选择节点</string>
+    <string name="upload_download">↑ %1$s  ↓ %2$s</string>
+    <string name="connection_count">%1$d 个活动连接</string>
+    <string name="add">添加</string>
+    <string name="expand_group">展开或收起节点组</string>
+    <string name="node_group_count">%1$d 个节点</string>
+    <string name="manual_nodes">手动节点</string>
+    <string name="edit">编辑</string>
+    <string name="delete">删除</string>
+    <string name="cancel">取消</string>
+    <string name="save">保存</string>
+    <string name="update_all">全部更新</string>
+    <string name="test_latency">测速</string>
+    <string name="search_nodes">搜索节点</string>
+    <string name="back">返回</string>
+    <string name="refresh">刷新</string>
+    <string name="close">关闭</string>
+    <string name="reconnect_now">立即重连</string>
+    <string name="settings_saved">设置已保存，重连后生效</string>
+    <string name="initial_duration">00:00:00</string><string name="zero">0</string>
+    <string name="initial_traffic">↑ 0 B\n↓ 0 B</string><string name="initial_speed">↑ 0 B/s\n↓ 0 B/s</string><string name="dash">—</string>
+    <string name="appearance">外观</string><string name="theme">主题</string><string name="theme_system">跟随系统</string><string name="theme_light">浅色</string><string name="theme_dark">深色</string><string name="dns">DNS</string>
+    <string name="proxy_dns">代理 DNS (DoH)</string><string name="direct_dns">直连 DNS</string><string name="dns_strategy">DNS 策略</string>
+    <string name="basic_routing">基础分流</string><string name="china_direct">中国大陆直连</string><string name="private_direct">私有网络直连</string>
+    <string name="block_ads">广告拦截</string><string name="skip_tls_verify">全局跳过 TLS 证书验证</string>
+    <string name="routing_groups_order">分流规则组（从上到下匹配）</string><string name="custom_rules">自定义规则</string>
+    <string name="add_rule">添加规则</string><string name="rule_set_status">规则集状态</string><string name="update_rules">更新规则集</string>
+    <string name="copy_diagnostics">复制诊断信息</string><string name="clear_logs">清空日志</string>
+    <string name="exclude_selected">排除所选</string><string name="include_selected">仅代理所选</string><string name="search_apps">搜索应用</string>
+    <string name="follow_current_node">当前节点</string><string name="select_app_node">选择代理节点</string><string name="node_unavailable">节点已失效</string><string name="not_installed">未安装</string>
+    <string name="no_subscriptions">暂无订阅</string><string name="move_up">上移</string><string name="move_down">下移</string>
+    <string name="paste_proxy_link">粘贴代理链接</string><string name="parse_link">解析链接</string><string name="name">名称</string>
+    <string name="protocol">协议</string><string name="server">服务器</string><string name="port">端口</string><string name="password">密码</string>
+    <string name="ss_method">Shadowsocks 加密方法</string><string name="vless_flow">VLESS Flow</string><string name="enable_tls">启用 TLS</string>
+    <string name="alpn_hint">ALPN（逗号分隔）</string><string name="utls_fingerprint">uTLS 指纹</string><string name="transport">传输方式</string>
+    <string name="path_service">Path / Service name</string><string name="host">Host</string><string name="upload_mbps">上行 Mbps</string><string name="download_mbps">下行 Mbps</string>
+    <string name="tuic_congestion">TUIC 拥塞控制</string><string name="save_profile">保存节点</string>
+    <string name="uuid_label" translatable="false">UUID</string><string name="sni_label" translatable="false">SNI</string>
+    <string name="rule_name">规则名称</string><string name="match_type">匹配类型</string><string name="match_value_hint">匹配值（如 google.com / 192.168.0.0/16）</string><string name="action">动作</string>
+    <string name="add_subscription">添加订阅</string><string name="subscription_name_hint">订阅名称（可选）</string><string name="subscription_url_hint">订阅链接 (https://…)</string>
+    <string name="test_all_nodes">批量测速</string>
+    <string name="app_list_permission_hint">如果部分应用未显示，请确认已允许本应用读取应用列表。点击打开系统设置。</string>
+</resources>

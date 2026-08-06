@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:focusable="true" android:focusableInTouchMode="true">
+    <com.google.android.material.appbar.MaterialToolbar android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="@dimen/toolbar_height" android:background="@color/background" app:navigationIcon="@drawable/ic_arrow_back" app:title="@string/per_app" />
+    <com.google.android.material.button.MaterialButtonToggleGroup android:id="@+id/modeGroup" android:layout_width="match_parent" android:layout_height="56dp" android:layout_margin="16dp" android:background="@drawable/rounded_panel_outline" android:padding="6dp" app:selectionRequired="true" app:singleSelection="true">
+        <com.google.android.material.button.MaterialButton android:id="@+id/excludeMode" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="@string/exclude_selected" app:backgroundTint="@color/segmented_tint" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/includeMode" style="@style/Widget.Material3.Button.TonalButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="@string/include_selected" app:backgroundTint="@color/segmented_tint" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+    <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.Pulse.SearchInput"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/search_height"
+        android:layout_marginHorizontal="@dimen/page_horizontal_inset"
+        android:layout_marginBottom="@dimen/space_sm">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:hint="@string/search_apps"
+            android:includeFontPadding="false"
+            android:importantForAutofill="no"
+            android:imeOptions="actionSearch"
+            android:inputType="text|textNoSuggestions"
+            android:maxLines="1"
+            android:paddingTop="@dimen/space_xxs"
+            android:paddingBottom="0dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_hint"
+            android:textSize="@dimen/text_body" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/appListPermissionHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="20dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingVertical="8dp"
+        android:text="@string/app_list_permission_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp" />
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerView" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:clipToPadding="false" android:padding="@dimen/list_content_inset" />
+    <com.google.android.material.button.MaterialButton android:id="@+id/saveButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_margin="16dp" android:text="@string/save" />
+</LinearLayout>

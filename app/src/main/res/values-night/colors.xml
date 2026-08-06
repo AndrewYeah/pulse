@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#181A1B</color>
+    <color name="surface">#242627</color>
+    <color name="surface_variant">#323536</color>
+    <color name="text_primary">#E8EAED</color>
+    <color name="text_secondary">#BEC4C8</color>
+    <color name="text_hint">#91989E</color>
+    <color name="proxy_active">#32D74B</color>
+    <color name="divider">#414648</color>
+    <color name="colorPrimary">#62686D</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">@color/proxy_active</color>
+    <color name="colorOnSecondary">#002107</color>
+    <color name="colorSurface">@color/surface</color>
+    <color name="colorOnSurface">@color/text_primary</color>
+    <color name="colorError">#FFB4AB</color>
+    <color name="colorSurfaceVariant">@color/surface_variant</color>
+    <color name="colorOnSurfaceVariant">@color/text_secondary</color>
+    <color name="colorOutline">@color/text_hint</color>
+    <color name="colorPrimaryContainer">@color/surface_variant</color>
+    <color name="colorOnPrimaryContainer">@color/text_primary</color>
+    <color name="colorSecondaryContainer">#0B5D20</color>
+    <color name="colorOnSecondaryContainer">#ABF7AF</color>
+    <color name="connection_button_surface">#FFFFFF</color>
+    <color name="connection_disconnected">#E9A0A0</color>
+    <color name="connection_connected">#8ED1A6</color>
+    <color name="action_dark">@color/colorPrimary</color>
+    <color name="action_on_dark">@color/colorOnPrimary</color>
+</resources>

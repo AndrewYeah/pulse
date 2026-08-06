@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="@dimen/dialog_window_inset"
+    android:insetTop="@dimen/dialog_window_inset"
+    android:insetRight="@dimen/dialog_window_inset"
+    android:insetBottom="@dimen/dialog_window_inset">
+
+    <shape android:shape="rectangle">
+        <solid android:color="@color/surface" />
+        <stroke
+            android:width="@dimen/stroke_thin"
+            android:color="@color/divider" />
+        <corners android:radius="@dimen/corner_container" />
+    </shape>
+</inset>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView style="@style/Widget.Pulse.ListCard" xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:minHeight="82dp" android:orientation="horizontal" android:padding="@dimen/list_content_inset">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/tvSubName" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:singleLine="true" android:textAppearance="@style/TextAppearance.Pulse.Body" android:textStyle="bold" />
+            <TextView android:id="@+id/tvSubUrl" android:layout_width="match_parent" android:layout_height="wrap_content" android:visibility="gone" />
+            <TextView android:id="@+id/tvSubInfo" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xs" android:textAppearance="@style/TextAppearance.Pulse.Supporting" />
+        </LinearLayout>
+        <ImageButton android:id="@+id/btnUpdate" android:layout_width="48dp" android:layout_height="48dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/refresh" android:src="@android:drawable/stat_notify_sync" />
+        <ImageButton android:id="@+id/btnEdit" android:layout_width="48dp" android:layout_height="48dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/edit" android:src="@android:drawable/ic_menu_edit" />
+        <ImageButton android:id="@+id/btnDelete" android:layout_width="48dp" android:layout_height="48dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/delete" android:src="@android:drawable/ic_menu_delete" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

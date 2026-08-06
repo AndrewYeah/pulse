@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="protocol_vless">VLESS</string>
+    <string name="protocol_vmess">VMess</string>
+    <string name="protocol_hysteria2">Hysteria2</string>
+    <string name="protocol_tuic">TUIC</string>
+    <string name="protocol_anytls">AnyTLS</string>
+    <string name="protocol_shadowsocks">Shadowsocks</string>
+    <string name="protocol_trojan">Trojan</string>
+    <string name="protocol_socks5">SOCKS5</string>
+    <string name="protocol_http">HTTP</string>
+    <string name="protocol_shadowsocksr">ShadowsocksR</string>
+    <string name="transport_none">بدون انتقال</string>
+    <string name="transport_websocket">WebSocket</string>
+    <string name="transport_grpc">gRPC</string>
+    <string name="transport_http">HTTP</string>
+    <string name="transport_httpupgrade">HTTP Upgrade</string>
+    <string name="match_domain">دامنه کامل</string>
+    <string name="match_domain_suffix">پسوند دامنه</string>
+    <string name="match_domain_keyword">کلیدواژه دامنه</string>
+    <string name="match_ip_cidr">IP CIDR</string>
+    <string name="match_geosite">GeoSite</string>
+    <string name="match_geoip">GeoIP</string>
+    <string name="action_proxy">پروکسی</string>
+    <string name="action_direct">مستقیم</string>
+    <string name="action_block">مسدود کردن</string>
+    <string name="routing_group_ads">مسدودسازی تبلیغات</string>
+    <string name="routing_group_apple">Apple</string>
+    <string name="routing_group_google">Google</string>
+    <string name="routing_group_telegram">Telegram</string>
+    <string name="routing_group_github">GitHub</string>
+    <string name="routing_group_china">چینِ سرزمین اصلی</string>
+    <string name="subscription_default_name">اشتراک-%1$d</string>
+    <plurals name="subscription_nodes_count">
+        <item quantity="one">%1$d پروفایل</item>
+        <item quantity="other">%1$d پروفایل</item>
+    </plurals>
+    <string name="subscription_updated_at">به‌روزرسانی %1$s</string>
+    <string name="subscription_not_updated">به‌روزرسانی نشده</string>
+</resources>

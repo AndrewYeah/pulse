@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView style="@style/Widget.Pulse.ListCard" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="@dimen/list_row_min_height" android:background="?attr/selectableItemBackground" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="@dimen/list_content_inset">
+        <ImageView android:id="@+id/icon" android:layout_width="40dp" android:layout_height="40dp" android:contentDescription="@null" />
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="@dimen/space_md" android:orientation="vertical">
+            <TextView android:id="@+id/name" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:singleLine="true" android:textAppearance="@style/TextAppearance.Pulse.Body" />
+            <TextView android:id="@+id/packageName" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="middle" android:singleLine="true" android:textAppearance="@style/TextAppearance.Pulse.Caption" />
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/nodeButton" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="120dp" android:layout_height="@dimen/touch_target" android:ellipsize="end" android:maxLines="1" android:text="@string/follow_current_node" android:textSize="@dimen/text_caption" />
+        <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/checkbox" android:layout_width="48dp" android:layout_height="48dp" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView style="@style/Widget.Pulse.ListCard" xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:id="@+id/groupRoot" android:layout_width="match_parent" android:layout_height="@dimen/settings_row_height" android:background="?attr/selectableItemBackground" android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="@dimen/card_content_inset" android:paddingEnd="@dimen/space_sm">
+        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+            <TextView android:id="@+id/groupTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="1" android:textAppearance="@style/TextAppearance.Pulse.Body" android:textStyle="bold" />
+            <TextView android:id="@+id/groupSubtitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/space_xxs" android:textAppearance="@style/TextAppearance.Pulse.Caption" />
+        </LinearLayout>
+        <ImageButton android:id="@+id/groupArrow" android:layout_width="48dp" android:layout_height="48dp" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="@string/expand_group" android:src="@drawable/ic_chevron_down" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

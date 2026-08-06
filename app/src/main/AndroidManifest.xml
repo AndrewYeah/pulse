@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- 基础网络权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- VPN 权限（创建 TUN 虚拟网卡，强制流量走代理的关键） -->
+    <!-- 前台服务（Android 8+ 必须，让 VPN 保持常驻） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+
+    <!-- 开机自启（可选，如果需要开机自动连接代理） -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Pulse"
+        android:usesCleartextTraffic="false">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.ConfigListActivity"
+            android:exported="false"
+            android:label="@string/config_manager"
+            android:theme="@style/Theme.Pulse.SubPage" />
+
+        <activity
+            android:name=".ui.EditConfigActivity"
+            android:exported="false"
+            android:label="@string/edit_config"
+            android:theme="@style/Theme.Pulse.SubPage" />
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"
+            android:label="@string/settings"
+            android:theme="@style/Theme.Pulse.SubPage" />
+
+        <activity android:name=".ui.DnsActivity" android:exported="false" android:label="@string/dns" android:theme="@style/Theme.Pulse.SubPage" />
+        <activity android:name=".ui.GeneralSettingsActivity" android:exported="false" android:label="@string/general_settings" android:theme="@style/Theme.Pulse.SubPage" />
+
+        <activity
+            android:name=".ui.SubscriptionActivity"
+            android:exported="false"
+            android:label="@string/subscription_management"
+            android:theme="@style/Theme.Pulse.SubPage" />
+
+        <activity android:name=".ui.ConnectionsActivity" android:exported="false" android:label="@string/connections" android:theme="@style/Theme.Pulse.SubPage" />
+        <activity android:name=".ui.PerAppActivity" android:exported="false" android:label="@string/per_app" android:theme="@style/Theme.Pulse.SubPage" />
+        <activity android:name=".ui.DiagnosticsActivity" android:exported="false" android:label="@string/diagnostics" android:theme="@style/Theme.Pulse.SubPage" />
+
+        <!-- ★ VPN 隧道服务，这是整个代理架构的核心 -->
+        <service
+            android:name=".service.TunnelService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            android:permission="android.permission.BIND_VPN_SERVICE">
+            <intent-filter>
+                <action android:name="android.net.VpnService" />
+            </intent-filter>
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="User-initiated device-wide VPN tunnel" />
+        </service>
+
+        <!-- 开机自启 Receiver（可选） -->
+        <receiver
+            android:name=".manager.BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

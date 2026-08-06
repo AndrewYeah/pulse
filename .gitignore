@@ -1,0 +1,57 @@
+# Gradle and Kotlin build state
+.gradle/
+.kotlin/
+**/build/
+
+# Android local configuration and signing secrets
+local.properties
+keystore.properties
+signing.properties
+*.jks
+*.keystore
+
+# Local AI/agent context files may contain signing credentials or device details
+AGENT.md
+AGENTS.md
+**/AGENT.md
+**/AGENTS.md
+
+# Android Studio, IntelliJ IDEA, VS Code and Fleet
+.idea/
+*.iml
+.vscode/
+.fleet/
+
+# Android native and generated artifacts
+.cxx/
+.externalNativeBuild/
+captures/
+*.apk
+*.aab
+*.ap_
+
+# sing-box libbox core is obtained locally and must never be committed
+**/libbox.aar
+**/libbox-*.aar
+**/libbox-sources.jar
+app/libs/aar_check/
+app/libs/libbox-*/
+
+# Local SDKs, tools and verification output
+.tools/
+output/
+device-current.png
+
+# Logs, crash dumps and temporary files
+*.log
+*.hprof
+hs_err_pid*
+replay_pid*
+*.tmp
+*.swp
+*~
+
+# Operating-system metadata
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing scale -->
+    <dimen name="space_xxs">2dp</dimen>
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">12dp</dimen>
+    <dimen name="space_lg">16dp</dimen>
+    <dimen name="space_xl">20dp</dimen>
+    <dimen name="space_2xl">24dp</dimen>
+
+    <!-- Shape scale -->
+    <dimen name="corner_medium">12dp</dimen>
+    <dimen name="corner_search">14dp</dimen>
+    <dimen name="corner_container">16dp</dimen>
+    <dimen name="corner_pill">24dp</dimen>
+    <dimen name="stroke_thin">1dp</dimen>
+
+    <!-- Typography scale -->
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_supporting">13sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+
+    <!-- Component metrics -->
+    <dimen name="toolbar_height">64dp</dimen>
+    <dimen name="touch_target">48dp</dimen>
+    <dimen name="search_height">48dp</dimen>
+    <dimen name="dialog_input_min_height">52dp</dimen>
+    <dimen name="settings_row_height">64dp</dimen>
+    <dimen name="list_row_min_height">72dp</dimen>
+    <dimen name="icon_medium">24dp</dimen>
+    <dimen name="icon_large">28dp</dimen>
+    <dimen name="dialog_window_inset">16dp</dimen>
+    <dimen name="dialog_content_inset">32dp</dimen>
+    <dimen name="page_horizontal_inset">16dp</dimen>
+    <dimen name="page_bottom_inset">32dp</dimen>
+    <dimen name="card_content_inset">16dp</dimen>
+    <dimen name="list_content_inset">12dp</dimen>
+</resources>

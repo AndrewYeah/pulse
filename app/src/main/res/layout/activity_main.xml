@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar" android:layout_width="match_parent" android:layout_height="@dimen/toolbar_height"
+        android:background="@color/background" app:title="@string/app_name"
+        app:titleTextColor="@color/text_primary">
+        <ImageButton android:id="@+id/btnSettingsTop" android:layout_width="48dp" android:layout_height="48dp"
+            android:layout_gravity="end" android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings" android:src="@drawable/ic_settings" />
+    </com.google.android.material.appbar.MaterialToolbar>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:clipToPadding="false" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:paddingStart="8dp" android:paddingEnd="8dp" android:paddingBottom="120dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp" android:layout_height="116dp" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardElevation="0dp" app:cardUseCompatPadding="false" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/run_duration" android:textAppearance="@style/TextAppearance.Pulse.Body" />
+                        <TextView android:id="@+id/tvDuration" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="@string/initial_duration" android:textColor="@color/text_primary" android:textSize="20sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp" android:layout_height="116dp" android:layout_weight="1" android:layout_marginStart="6dp" app:cardElevation="0dp" app:cardUseCompatPadding="false" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/connections" android:textAppearance="@style/TextAppearance.Pulse.Body" />
+                        <TextView android:id="@+id/tvConnections" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="@string/zero" android:textColor="@color/text_primary" android:textSize="20sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:orientation="horizontal">
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp" android:layout_height="124dp" android:layout_weight="1" android:layout_marginEnd="6dp" app:cardElevation="0dp" app:cardUseCompatPadding="false" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/traffic_total" android:textAppearance="@style/TextAppearance.Pulse.Body" />
+                        <TextView android:id="@+id/tvTraffic" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:ellipsize="end" android:lineSpacingExtra="3dp" android:maxLines="2" android:text="@string/initial_traffic" android:textColor="@color/text_primary" android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp" android:layout_height="124dp" android:layout_weight="1" android:layout_marginStart="6dp" app:cardElevation="0dp" app:cardUseCompatPadding="false" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="14dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/speed" android:textAppearance="@style/TextAppearance.Pulse.Body" />
+                        <TextView android:id="@+id/tvSpeed" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:ellipsize="end" android:lineSpacingExtra="3dp" android:maxLines="2" android:text="@string/initial_speed" android:textColor="@color/text_primary" android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <FrameLayout android:id="@+id/modeGroup" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginTop="8dp" android:background="@drawable/rounded_panel_outline" android:padding="4dp">
+                <View android:id="@+id/modeIndicator" android:layout_width="0dp" android:layout_height="match_parent" android:background="@drawable/mode_selected" />
+                <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal">
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnRuleMode" style="@style/Widget.Pulse.SegmentedButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="@string/mode_rule" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btnGlobalMode" style="@style/Widget.Pulse.SegmentedButton" android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:text="@string/mode_global" />
+                </LinearLayout>
+            </FrameLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnConfigManager" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:text="@string/profiles" app:icon="@drawable/ic_profiles" app:iconTint="@color/text_primary" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnConnections" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:layout_marginStart="4dp" android:text="@string/connections" app:icon="@drawable/ic_connections" app:iconTint="@color/text_primary" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnDns" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:text="@string/dns" app:icon="@drawable/ic_route" app:iconTint="@color/text_primary" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnSettings" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:layout_marginStart="4dp" android:text="@string/routing" app:icon="@drawable/ic_apps" app:iconTint="@color/text_primary" />
+            </LinearLayout>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnPerApp" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:layout_marginEnd="4dp" android:text="@string/per_app" app:icon="@drawable/ic_apps" app:iconTint="@color/text_primary" />
+                <com.google.android.material.button.MaterialButton android:id="@+id/btnDiagnostics" style="@style/Widget.Pulse.OutlinedButton" android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1" android:layout_marginStart="4dp" android:text="@string/diagnostics" app:icon="@drawable/ic_diagnostics" app:iconTint="@color/text_primary" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/connectionDock"
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:layout_gravity="bottom"
+        android:background="@color/surface"
+        android:elevation="10dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="top"
+            android:background="@color/divider" />
+
+        <FrameLayout
+            android:id="@+id/connectionControl"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="4dp">
+
+        <View
+            android:id="@+id/connectionHalo"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:layout_gravity="center"
+            android:alpha="0.10"
+            android:background="@drawable/circle_indicator"
+            android:backgroundTint="@color/connection_disconnected" />
+
+        <FrameLayout
+            android:id="@+id/connectionButtonContainer"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:background="@drawable/connection_button_surface"
+            android:elevation="5dp">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnToggleProxy"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:contentDescription="@string/btn_start"
+                android:padding="20dp"
+                android:src="@drawable/ic_power"
+                app:tint="@color/connection_disconnected" />
+        </FrameLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/bottomProfile"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginStart="72dp"
+            android:layout_marginEnd="72dp"
+            android:layout_marginBottom="6dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvActiveConfig"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tvServerInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:contentDescription="@string/select_profile"
+                android:src="@drawable/ic_chevron_right" />
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>
