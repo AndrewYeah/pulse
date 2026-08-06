@@ -16,6 +16,10 @@ AGENTS.md
 **/AGENT.md
 **/AGENTS.md
 
+# Local maintainer release automation
+/publish-release.bat
+/publish-release.ps1
+
 # Android Studio, IntelliJ IDEA, VS Code and Fleet
 .idea/
 *.iml

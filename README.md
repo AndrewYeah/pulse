@@ -215,7 +215,7 @@ app/build/outputs/apk/release/app-release.apk
 
 ## 发布到 GitHub Release
 
-仓库提供了 `publish-release.bat` 一键发布入口。它会依次执行：
+项目维护者可在本地使用 `publish-release.bat` / `publish-release.ps1` 一键发布。这两个脚本属于本地发布工具，已被 Git 忽略，不随公开仓库分发。当前本地脚本会依次执行：
 
 1. 检查工作区、版本号、`libbox.aar` 和本地签名文件。
 2. 使用 `clean testDebugUnitTest lintDebug assembleRelease --no-build-cache` 运行单元测试、完整 Lint 并构建签名 APK。
@@ -301,8 +301,6 @@ Pulse/
 │   └── build.gradle.kts
 ├── gradle/
 ├── build-arm64.bat
-├── publish-release.bat
-├── publish-release.ps1
 ├── README.md
 └── AGENTS.md                       # 本地维护上下文，Git 忽略
 ```
