@@ -63,7 +63,7 @@ if ($Version -ne $DeclaredVersion) {
 }
 $Tag = "v$Version"
 
-$GitBranch = (& git branch --show-current).Trim()
+$GitBranch = ((& git branch --show-current) | Out-String).Trim()
 if ([string]::IsNullOrWhiteSpace($GitBranch)) {
     Stop-Publish "Detached HEAD is not supported; check out the release branch first"
 }
@@ -72,7 +72,7 @@ if (-not [string]::IsNullOrWhiteSpace($GitStatus)) {
     Stop-Publish "Working tree is not clean. Commit the release changes first."
 }
 
-$ExistingLocalTag = (& git tag --list $Tag).Trim()
+$ExistingLocalTag = ((& git tag --list $Tag) | Out-String).Trim()
 if (-not [string]::IsNullOrWhiteSpace($ExistingLocalTag)) {
     Stop-Publish "Local tag already exists: $Tag"
 }
@@ -91,7 +91,7 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
 if ($LASTEXITCODE -ne 0) {
     Stop-Publish "GitHub CLI is not authenticated. Run 'gh auth login' first."
 }
-$Repository = (& gh repo view --json nameWithOwner --jq .nameWithOwner).Trim()
+$Repository = ((& gh repo view --json nameWithOwner --jq .nameWithOwner) | Out-String).Trim()
 if ([string]::IsNullOrWhiteSpace($Repository)) {
     Stop-Publish "Could not determine the GitHub repository from the current checkout"
 }
@@ -179,6 +179,6 @@ if ($Draft) { $GhArgs += "--draft" }
 Write-Host "Creating GitHub Release $Tag in $Repository..." -ForegroundColor Yellow
 Invoke-Checked "gh" $GhArgs
 
-$ReleaseUrl = (& gh release view $Tag --repo $Repository --json url --jq .url).Trim()
+$ReleaseUrl = ((& gh release view $Tag --repo $Repository --json url --jq .url) | Out-String).Trim()
 Write-Host "Release published successfully: $ReleaseUrl" -ForegroundColor Green
 Write-Host "Asset SHA-256: $ApkHash"
