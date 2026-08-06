@@ -1,44 +1,61 @@
 pluginManagement {
     repositories {
-        // 阿里云镜像（优先），规避国内访问 dl.google.com 的 TLS 握手中断
-        maven {
-            url = uri("https://maven.aliyun.com/repository/google")
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+        val runningInCi = System.getenv("CI").equals("true", ignoreCase = true)
+        if (runningInCi) {
+            google {
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
             }
-        }
-        maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
-        maven { url = uri("https://maven.aliyun.com/repository/central") }
-        // 官方源兜底
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+            mavenCentral()
+            gradlePluginPortal()
+        } else {
+            // 国内开发环境优先使用阿里云镜像，官方源作为兜底。
+            maven {
+                url = uri("https://maven.aliyun.com/repository/google")
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
             }
+            maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
+            maven { url = uri("https://maven.aliyun.com/repository/central") }
+            google {
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
+            }
+            mavenCentral()
+            gradlePluginPortal()
         }
-        mavenCentral()
-        gradlePluginPortal()
     }
 }
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven {
-            url = uri("https://maven.aliyun.com/repository/google")
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
+        val runningInCi = System.getenv("CI").equals("true", ignoreCase = true)
+        if (runningInCi) {
+            google()
+            mavenCentral()
+        } else {
+            maven {
+                url = uri("https://maven.aliyun.com/repository/google")
+                content {
+                    includeGroupByRegex("com\\.android.*")
+                    includeGroupByRegex("com\\.google.*")
+                    includeGroupByRegex("androidx.*")
+                }
             }
+            maven { url = uri("https://maven.aliyun.com/repository/central") }
+            google()
+            mavenCentral()
         }
-        maven { url = uri("https://maven.aliyun.com/repository/central") }
-        google()
-        mavenCentral()
-        // JitPack 用于获取部分依赖
         maven { url = uri("https://jitpack.io") }
     }
 }
