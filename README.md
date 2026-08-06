@@ -213,6 +213,50 @@ app/build/outputs/apk/release/app-release.apk
 
 在公开发布前，应使用独立 keystore 和 CI Secret 管理签名信息；不要复用本地开发凭据。
 
+## 发布到 GitHub Release
+
+仓库提供了 `publish-release.bat` 一键发布入口。它会依次执行：
+
+1. 检查工作区、版本号、`libbox.aar` 和本地签名文件。
+2. 使用 `clean assembleRelease --no-build-cache` 构建签名 APK。
+3. 验证 APK 签名，并确认只包含 `arm64-v8a` 和 `libbox.so`。
+4. 推送当前分支到 `origin`。
+5. 创建对应的 GitHub Release，并将 APK 作为附件上传。
+
+首次使用需要安装 [GitHub CLI](https://cli.github.com/) 并登录：
+
+```powershell
+winget install --id GitHub.cli
+gh auth login
+```
+
+选择 `GitHub.com`、SSH 或 HTTPS，并按提示完成认证。确认登录状态：
+
+```powershell
+gh auth status
+```
+
+发布前请先提交要发布的源码和文档变更，确保工作区干净；脚本会从 `app/build.gradle.kts` 的 `versionName` 读取版本，并创建同名的 `v<version>` tag。例如当前版本为 `1.1.0` 时：
+
+```powershell
+cmd /c "publish-release.bat"
+```
+
+也可以显式传入相同版本号，或创建 Draft Release 供检查：
+
+```powershell
+cmd /c "publish-release.bat 1.1.0"
+powershell -NoProfile -ExecutionPolicy Bypass -File .\publish-release.ps1 -Draft
+```
+
+脚本要求以下文件已在本地准备好，但不会上传它们：
+
+- `app/libs/libbox.aar`
+- `app/release-key.jks`
+- `keystore.properties`
+
+发布完成后，GitHub Release 页面会显示 APK 下载地址和 SHA-256。若 tag 已存在、版本号与 Gradle 不一致、签名校验失败或工作区有未提交改动，脚本会停止，不会覆盖已有 Release。
+
 ## 项目结构
 
 ```text
@@ -246,6 +290,8 @@ Pulse/
 │   └── build.gradle.kts
 ├── gradle/
 ├── build-arm64.bat
+├── publish-release.bat
+├── publish-release.ps1
 ├── README.md
 └── AGENTS.md                       # 本地维护上下文，Git 忽略
 ```

@@ -19,5 +19,13 @@ jobs:
           cache: gradle
       - uses: android-actions/setup-android@v3
       - run: sdkmanager "platforms;android-36" "build-tools;35.0.0"
+      - name: Download libbox 1.13.14
+        shell: bash
+        run: |
+          mkdir -p app/libs
+          curl --fail --location \
+            https://jitpack.io/com/github/singbox-android/libbox/1.13.14/libbox-1.13.14.aar \
+            --output app/libs/libbox.aar
+          echo "D8EE7620047E4485199A9CF8DB30E67D1497534117F1774A93C0696068B7B012  app/libs/libbox.aar" | sha256sum --check
       - run: chmod +x gradlew
       - run: ./gradlew testDebugUnitTest lintDebug assembleDebug --no-daemon --no-build-cache
