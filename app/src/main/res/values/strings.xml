@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Pulse</string>
+    <string name="onboarding_title" translatable="false">Welcome to Pulse</string>
+    <string name="onboarding_subtitle" translatable="false">Choose your preferred language. You can change it later in General settings.</string>
+    <string name="onboarding_english" translatable="false">English</string>
+    <string name="onboarding_simplified_chinese" translatable="false">Simplified Chinese</string>
+    <string name="onboarding_russian" translatable="false">Russian</string>
+    <string name="onboarding_persian" translatable="false">Persian</string>
+    <string name="onboarding_azerbaijani" translatable="false">Azerbaijani</string>
+    <string name="onboarding_arabic" translatable="false">Arabic</string>
+    <string name="onboarding_continue" translatable="false">Continue</string>
     <string name="config_manager">配置管理</string>
     <string name="edit_config">编辑配置</string>
     <string name="subscription_management">订阅管理</string>

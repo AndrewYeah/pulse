@@ -43,6 +43,7 @@ app/libs/libbox-*/
 
 # Local SDKs, tools and verification output
 .tools/
+.baoyu-skills/
 output/
 device-current.png
 

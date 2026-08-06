@@ -20,6 +20,8 @@
     <dimen name="text_caption">12sp</dimen>
     <dimen name="text_supporting">13sp</dimen>
     <dimen name="text_body">14sp</dimen>
+    <dimen name="text_onboarding_title">28sp</dimen>
+    <dimen name="text_onboarding_subtitle">15sp</dimen>
 
     <!-- Component metrics -->
     <dimen name="toolbar_height">64dp</dimen>
@@ -36,4 +38,5 @@
     <dimen name="page_bottom_inset">32dp</dimen>
     <dimen name="card_content_inset">16dp</dimen>
     <dimen name="list_content_inset">12dp</dimen>
+    <dimen name="onboarding_option_height">56dp</dimen>
 </resources>

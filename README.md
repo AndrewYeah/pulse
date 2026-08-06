@@ -1,29 +1,32 @@
 # Pulse
 
-Pulse 是一个基于 [sing-box](https://github.com/SagerNet/sing-box) `libbox` 内核的 Android 透明代理客户端。它通过 Android `VpnService` 创建 TUN 虚拟网卡，将设备流量交给 sing-box 进行 DNS 处理、分流和代理出站，无需另外安装代理客户端。
+[English](README.md) | [简体中文](README_CN.md)
 
-当前应用标识为 `com.andrew.proxyapp`，最低支持 Android 8.0（API 26），目标 SDK 为 36。项目只产出 `arm64-v8a` APK。
+Pulse is an Android transparent proxy client built on the [sing-box](https://github.com/SagerNet/sing-box) `libbox` core. It creates a TUN virtual interface through Android `VpnService`, then lets sing-box handle DNS, routing, and proxy egress for device traffic without requiring a separate proxy client.
 
-> `libbox.aar` 是本地获取的二进制内核，故意不提交到 GitHub。首次克隆仓库后，必须先完成下方“获取 libbox.aar”步骤，项目才能编译。
+The application ID is `com.andrew.proxyapp`. It supports Android 8.0 (API 26) and later, targets SDK 36, and currently produces `arm64-v8a` APKs only.
 
-## 功能概览
+> `libbox.aar` is a locally obtained binary core and is intentionally excluded from GitHub. After cloning the repository, complete the “Get `libbox.aar`” section below before building.
 
-- 基于 `VpnService` + TUN + sing-box 的设备级透明代理。
-- 支持规则模式与全局模式；可配置局域网直连、自定义域名/IP 规则、规则组和本地规则集。
-- 支持 VLESS、VMess、Hysteria2、TUIC、AnyTLS、Shadowsocks、Trojan、SOCKS5 与 HTTP 出站。
-- 支持单链接手动导入，以及 Base64 URI 列表、Clash YAML、sing-box JSON 订阅。
-- 订阅更新会尝试多种 User-Agent，并清理同一订阅的旧节点、合并稳定 ID 重复节点。
-- 支持 DNS 策略、代理 DNS / 直连 DNS、按应用包含或排除、为指定应用固定节点。
-- 支持运行中切换当前节点、连接列表、日志与诊断、延迟测试和电池优化检查。
-- 支持简体中文、English、Русский、فارسی、Azərbaycan dili、العربية，以及浅色、深色和跟随系统主题。
-- UI 的颜色、间距、圆角、文本层级和常用控件样式已集中到资源设计系统，便于统一维护。
+## Features
 
-`ssr://` 可以被识别为导入项，但 sing-box 1.13.14 不支持 ShadowsocksR；应用会在启动前提示该节点不可用。
+- Device-wide transparent proxying through `VpnService`, TUN, and sing-box.
+- Rule and global modes, LAN direct access, custom domain/IP rules, routing groups, and local rule sets.
+- VLESS, VMess, Hysteria2, TUIC, AnyTLS, Shadowsocks, Trojan, SOCKS5, and HTTP outbounds.
+- Manual single-link import plus Base64 URI lists, Clash YAML, and sing-box JSON subscriptions.
+- Subscription updates with multiple User-Agents, old-node cleanup, and stable-ID duplicate merging.
+- DNS strategy, proxy/direct DNS, per-app include or exclude mode, and fixed nodes for selected apps.
+- Runtime node switching, connection list, logs and diagnostics, latency tests, and battery-optimization checks.
+- Simplified Chinese, English, Russian, Persian, Azerbaijani, and Arabic, plus light, dark, and system themes.
+- A first-run English language-selection page; the language can be changed later in General settings.
+- A centralized UI design system for colors, spacing, corner radii, typography, and common controls.
 
-## 工作原理
+`ssr://` links can be recognized as import items, but sing-box 1.13.14 does not support ShadowsocksR. The app reports that the profile is unavailable before starting the tunnel.
+
+## How It Works
 
 ```text
-设备应用流量
+Device application traffic
     |
     v
 Android VpnService / TUN (gVisor stack)
@@ -31,81 +34,77 @@ Android VpnService / TUN (gVisor stack)
     v
 TunnelService -> sing-box libbox
     |                 |
-    |                 +-> DNS 劫持、嗅探、规则匹配、按应用路由
+    |                 +-> DNS hijacking, sniffing, rules, per-app routing
     v
-selector: 当前节点 / 指定节点 / direct-out / block-out
+selector: current profile / fixed profile / direct-out / block-out
     |
     v
-代理服务器或直连目标
+Proxy server or direct destination
 ```
 
-默认情况下，除 Pulse 自身外的设备应用会进入 VPN。可在“按应用分流”中改为只包含选中应用，或排除选中应用；也可以为某个应用明确绑定独立节点。
+By default, applications other than Pulse enter the VPN. In Per-app routing, you can include only selected applications or exclude selected applications. A specific application can also be assigned its own profile.
 
-`TunnelService` 会将代理出站 socket 交给 `VpnService.protect()` 保护，避免代理连接再次回流进 TUN 造成路由环路。
+`TunnelService` protects proxy outbound sockets with `VpnService.protect()` so that proxy connections do not re-enter the TUN and create a routing loop.
 
-## 技术栈
+## Technology Stack
 
-| 项目 | 当前配置 |
+| Component | Current configuration |
 | --- | --- |
-| 语言 | Kotlin，JVM target 17 |
+| Language | Kotlin, JVM target 17 |
 | Android Gradle Plugin | 8.13.2 |
 | Gradle Wrapper | 8.13 |
-| 最低 / 目标 SDK | 26 / 36 |
-| 内核 | sing-box libbox 1.13.14 |
-| 打包 ABI | `arm64-v8a` |
-| UI | Android Views、Material Components、ViewBinding |
-| 持久化 | SharedPreferences + Gson |
+| Minimum / target SDK | 26 / 36 |
+| Core | sing-box libbox 1.13.14 |
+| Packaged ABI | `arm64-v8a` |
+| UI | Android Views, Material Components, ViewBinding |
+| Persistence | SharedPreferences + Gson |
 
-## 快速开始
+## Quick Start
 
-### 1. 准备环境
+### 1. Prepare the environment
 
-安装以下工具：
+Install:
 
-- Android Studio（推荐最新稳定版）及 Android SDK Platform 36。
-- JDK 17 或更高版本。Gradle Wrapper 会自动下载项目所需的 Gradle 版本。
-- 用于真机安装的 Android Platform Tools（可选）。
+- Android Studio (latest stable is recommended) and Android SDK Platform 36.
+- JDK 17 or later. The Gradle Wrapper downloads the required Gradle version.
+- Android Platform Tools for device installation (optional).
 
-克隆仓库后，先进入项目根目录：
+Clone the repository and enter its root directory:
 
 ```powershell
-git clone <你的仓库地址> Pulse
+git clone <repository-url> Pulse
 Set-Location Pulse
 ```
 
-Android Studio 首次打开项目后会生成本机专用的 `local.properties`；它已被 Git 忽略，不需要提交。
+Android Studio creates the machine-specific `local.properties` on first open. It is Git-ignored and must not be committed.
 
-### 2. 获取 `libbox.aar`
+### 2. Get `libbox.aar`
 
-本项目依赖 `singbox-android/libbox` 的 **1.13.14** 构件。请使用与代码匹配的版本，不要随意替换成新版内核；不同 libbox 版本的 Java/Kotlin API 和 sing-box 配置字段可能不兼容。
+This project depends on the **1.13.14** artifact from `singbox-android/libbox`. Use the version that matches the source code. Replacing it with an arbitrary newer core may break Java/Kotlin APIs or sing-box configuration fields.
 
-内核的固定下载地址：
+Fixed download URL:
 
 ```text
 https://jitpack.io/com/github/singbox-android/libbox/1.13.14/libbox-1.13.14.aar
 ```
 
-在项目根目录执行以下命令，创建目录并下载为项目期待的文件名。
+From the project root, create the expected directory and download the expected filename.
 
-Windows PowerShell：
+Windows PowerShell:
 
 ```powershell
 New-Item -ItemType Directory -Force .\app\libs | Out-Null
-Invoke-WebRequest `
-  -Uri "https://jitpack.io/com/github/singbox-android/libbox/1.13.14/libbox-1.13.14.aar" `
-  -OutFile .\app\libs\libbox.aar
+Invoke-WebRequest -Uri "https://jitpack.io/com/github/singbox-android/libbox/1.13.14/libbox-1.13.14.aar" -OutFile .\app\libs\libbox.aar
 ```
 
-macOS / Linux：
+macOS / Linux:
 
 ```bash
 mkdir -p app/libs
-curl -fL \
-  https://jitpack.io/com/github/singbox-android/libbox/1.13.14/libbox-1.13.14.aar \
-  -o app/libs/libbox.aar
+curl -fL https://jitpack.io/com/github/singbox-android/libbox/1.13.14/libbox-1.13.14.aar -o app/libs/libbox.aar
 ```
 
-最终目录必须是：
+The final path must be:
 
 ```text
 Pulse/
@@ -114,83 +113,84 @@ Pulse/
         └── libbox.aar
 ```
 
-`app/libs/.gitkeep` 仅用于在仓库中保留目录；`libbox.aar` 以及其解包目录已被 `.gitignore` 忽略，绝不能提交到 GitHub。
+`app/libs/.gitkeep` only preserves the empty directory in the repository. `libbox.aar` and extracted AAR directories are ignored by `.gitignore` and must never be committed to GitHub.
 
-#### 校验下载结果
+#### Verify the download
 
-当前 1.13.14 构件的 SHA-256 为：
+SHA-256 for the current 1.13.14 artifact:
 
 ```text
 D8EE7620047E4485199A9CF8DB30E67D1497534117F1774A93C0696068B7B012
 ```
 
-Windows PowerShell：
+Windows PowerShell:
 
 ```powershell
 (Get-FileHash .\app\libs\libbox.aar -Algorithm SHA256).Hash
 jar tf .\app\libs\libbox.aar | Select-String "jni/arm64-v8a/libbox.so"
 ```
 
-macOS / Linux：
+macOS / Linux:
 
 ```bash
 shasum -a 256 app/libs/libbox.aar
 jar tf app/libs/libbox.aar | grep 'jni/arm64-v8a/libbox.so'
 ```
 
-输出应包含 `jni/arm64-v8a/libbox.so`。该 AAR 本身可能包含多个 ABI；项目的 `app/build.gradle.kts` 已将最终 APK 锁定为 `arm64-v8a`，不要把它改为多架构。
+The archive must contain `jni/arm64-v8a/libbox.so`. The AAR may contain multiple ABIs, but `app/build.gradle.kts` locks the final APK to `arm64-v8a`; do not change it to a multi-ABI build.
 
-不要下载并改名使用 sing-box Release 中的 Android `tar.gz` 可执行文件，也不要从 SFA APK 中提取文件替代 AAR；它们不是本项目所需的 Java/JNI 库封装。
+Do not download and rename the Android `tar.gz` executable from a sing-box release, or extract a replacement from an SFA APK. Those files are not the Java/JNI library wrapper required by this project.
 
-### 3. 同步并构建
+### 3. Sync and build
 
-Windows 下建议使用仓库自带脚本。它会清理旧产物，并关闭 Gradle Build Cache，避免修改后的 Kotlin 代码被旧缓存覆盖。
+On Windows, the repository build helper is recommended. It cleans old outputs and disables the Gradle Build Cache so modified Kotlin code cannot be replaced by stale cached results.
 
 ```powershell
 cmd /c "build-arm64.bat"
 ```
 
-等价的手动命令：
+Equivalent manual command:
 
 ```powershell
 cmd /c ".\gradlew clean assembleDebug --no-daemon --no-build-cache"
 ```
 
-调试 APK 输出路径：
+Debug APK output:
 
 ```text
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
-### 4. 安装到设备
+### 4. Install on a device
 
-连接 Android 设备并开启 USB 或无线调试后：
+Enable USB or wireless debugging on an Android device, then run:
 
 ```powershell
 adb install -r -t app\build\outputs\apk\debug\app-debug.apk
 adb shell am start -n com.andrew.proxyapp/.MainActivity
 ```
 
-若 `adb` 不在系统 `PATH`，请替换为 Android SDK 的 `platform-tools/adb` 完整路径。
+If `adb` is not on `PATH`, replace it with the full path to Android SDK `platform-tools/adb`.
 
-### 5. 首次使用
+### 5. First use
 
-1. 打开 Pulse，进入“节点”添加单个节点，或进入“订阅管理”添加订阅链接。
-2. 选择一个可用节点，按需设置规则 / 全局模式、DNS 和按应用分流。
-3. 点击主页连接按钮，并在系统 VPN 授权对话框中确认。
-4. 在连接列表和诊断页面查看运行状态、流量、日志及错误分类。
+1. On the first launch, use the English language-selection page to choose a preferred language and tap Continue.
+2. Open Profiles to add a single proxy profile, or open Subscription manager to add a subscription URL.
+3. Select an available profile and configure rule/global mode, DNS, and per-app routing as needed.
+4. Tap the connection button and approve the system VPN permission dialog.
+5. Review runtime state, traffic, logs, and categorized errors in Connections and Logs & diagnostics.
 
-示例仅用于说明 URI 格式，不包含可用凭据：
+Example URI for format illustration only; it contains no usable credentials:
 
 ```text
 hysteria2://password@example.com:443?sni=example.com&alpn=h3#Example
 ```
 
-不要将真实订阅地址、节点密码、私钥或证书跳过设置写入源码、README、Issue 或日志。
+Do not put real subscription URLs, node passwords, private keys, or certificate-skip settings in source code, README files, issues, or logs.
 
-## 构建 Release
+## Building a Release
 
-Release 签名是本机配置，不随仓库分发。需要签名 Release 时，在项目根目录创建被忽略的 `keystore.properties`：
+Release signing is local configuration and is not distributed with this repository. To build a signed Release, create the ignored `keystore.properties` in the project root:
 
 ```properties
 storeFile=app/release-key.jks
@@ -199,83 +199,83 @@ keyAlias=<key-alias>
 keyPassword=<key-password>
 ```
 
-将 keystore 放在 `app/release-key.jks`，然后执行：
+Place the keystore at `app/release-key.jks`, then run:
 
 ```powershell
 cmd /c ".\gradlew clean assembleRelease --no-daemon --no-build-cache"
 ```
 
-Release APK 输出到：
+Release APK output:
 
 ```text
 app/build/outputs/apk/release/app-release.apk
 ```
 
-在公开发布前，应使用独立 keystore 和 CI Secret 管理签名信息；不要复用本地开发凭据。
+For public releases, use a dedicated keystore and CI Secrets. Do not reuse local development credentials.
 
-## 发布到 GitHub Release
+## Publishing to GitHub Releases
 
-项目维护者可在本地使用 `publish-release.bat` / `publish-release.ps1` 一键发布。这两个脚本属于本地发布工具，已被 Git 忽略，不随公开仓库分发。当前本地脚本会依次执行：
+The project maintainer may use local `publish-release.bat` / `publish-release.ps1` helpers. These scripts are local release tools, are Git-ignored, and are not distributed in the public repository. The current local scripts:
 
-1. 检查工作区、版本号、`libbox.aar` 和本地签名文件。
-2. 使用 `clean testDebugUnitTest lintDebug assembleRelease --no-build-cache` 运行单元测试、完整 Lint 并构建签名 APK。
-3. 验证 APK 签名，并确认只包含 `arm64-v8a` 和 `libbox.so`。
-4. 推送当前分支到 `origin`。
-5. 创建对应的 GitHub Release，并将 APK 作为附件上传。
+1. Check the worktree, version, `libbox.aar`, and local signing files.
+2. Run unit tests, full Lint, and a signed Release build with `clean testDebugUnitTest lintDebug assembleRelease --no-build-cache`.
+3. Verify the APK signature and confirm that only `arm64-v8a` and `libbox.so` are packaged.
+4. Push the current branch to `origin`.
+5. Create the matching GitHub Release and upload the APK as an asset.
 
-首次使用需要安装 [GitHub CLI](https://cli.github.com/) 并登录：
+The first use requires [GitHub CLI](https://cli.github.com/) and authentication:
 
 ```powershell
 winget install --id GitHub.cli
 gh auth login
 ```
 
-选择 `GitHub.com`、SSH 或 HTTPS，并按提示完成认证。确认登录状态：
+Choose `GitHub.com`, SSH or HTTPS, and complete the prompts. Check the session with:
 
 ```powershell
 gh auth status
 ```
 
-发布前请先提交要发布的源码和文档变更，确保工作区干净；脚本会从 `app/build.gradle.kts` 的 `versionName` 读取版本，并创建同名的 `v<version>` tag。例如当前版本为 `1.1.0` 时：
+Commit the source and documentation changes before publishing so the worktree is clean. The local helper reads `versionName` from `app/build.gradle.kts` and creates a matching `v<version>` tag. For version `1.1.0`:
 
 ```powershell
 cmd /c "publish-release.bat"
 ```
 
-也可以显式传入相同版本号，或创建 Draft Release 供检查：
+You can also pass the same version explicitly or create a Draft Release for review:
 
 ```powershell
 cmd /c "publish-release.bat 1.1.0"
 powershell -NoProfile -ExecutionPolicy Bypass -File .\publish-release.ps1 -Draft
 ```
 
-脚本要求以下文件已在本地准备好，但不会上传它们：
+The following files must be prepared locally and are never uploaded:
 
 - `app/libs/libbox.aar`
 - `app/release-key.jks`
 - `keystore.properties`
 
-发布完成后，GitHub Release 页面会显示 APK 下载地址和 SHA-256。若 tag 已存在、版本号与 Gradle 不一致、签名校验失败或工作区有未提交改动，脚本会停止，不会覆盖已有 Release。
+After publishing, the GitHub Release page contains the APK download and SHA-256. The helper stops without overwriting an existing Release if the tag already exists, the version does not match Gradle, signature validation fails, or the worktree is dirty.
 
-### 手动运行 GitHub Actions
+### Manually run GitHub Actions
 
-GitHub Actions 不会在普通 push 或 pull request 时自动运行，避免重复远程构建和通知邮件。需要验证仓库能否在全新 Linux 环境从零构建时：
+GitHub Actions does not run on ordinary pushes or pull requests, avoiding duplicate remote builds and notification emails. To verify that a clean Linux environment can build the project from scratch:
 
-1. 打开 GitHub 仓库的 `Actions` 页面。
-2. 选择 `Android checks`。
-3. 点击 `Run workflow`，选择要验证的分支。
-4. 再次点击 `Run workflow` 确认。
+1. Open the repository's `Actions` page on GitHub.
+2. Select `Android checks`.
+3. Click `Run workflow` and select the branch to verify.
+4. Click `Run workflow` again to confirm.
 
-该手动任务会在 GitHub 临时环境中下载并校验 `libbox.aar`，然后运行单元测试、Lint 和 Debug 构建；它不会接触本地 Release keystore，也不会发布 APK。
+The manual job downloads and verifies `libbox.aar` in a temporary GitHub environment, then runs unit tests, Lint, and a Debug build. It does not access the local Release keystore or publish an APK.
 
-## 项目结构
+## Project Structure
 
 ```text
 Pulse/
 ├── app/
 │   ├── libs/
 │   │   ├── .gitkeep
-│   │   └── libbox.aar              # 本地下载，Git 忽略
+│   │   └── libbox.aar              # downloaded locally, Git-ignored
 │   ├── src/main/
 │   │   ├── AndroidManifest.xml
 │   │   ├── kotlin/com/andrew/proxyapp/
@@ -302,76 +302,77 @@ Pulse/
 ├── gradle/
 ├── build-arm64.bat
 ├── README.md
-└── AGENTS.md                       # 本地维护上下文，Git 忽略
+├── README_CN.md
+└── AGENTS.md                       # local maintenance context, Git-ignored
 ```
 
-## 关键模块
+## Key Modules
 
-| 模块 | 职责 |
+| Module | Responsibility |
 | --- | --- |
-| `TunnelService` | 实现 `VpnService` 和 libbox `PlatformInterface`，创建 TUN、保护出站 socket、启动和恢复内核。 |
-| `SingBoxConfigBuilder` | 将节点和应用设置生成符合 sing-box 1.13 的 JSON 配置。 |
-| `ProxyManager` | 请求 VPN 权限，协调服务启动、停止和重启。 |
-| `RuntimeController` | 读取运行状态、连接、日志并在运行中切换 selector 节点。 |
-| `ConfigStore` | 持久化节点、订阅、DNS、规则、主题和按应用设置。 |
-| `SubscriptionManager` | 下载订阅、尝试多 User-Agent、识别 URI / Clash / sing-box 格式并导入节点。 |
-| `RuleSetManager` | 管理可用的本地规则集文件。 |
-| `ui/` | 主界面、节点、订阅、DNS、路由、按应用分流、诊断和通用设置页面。 |
+| `TunnelService` | Implements Android `VpnService` and libbox `PlatformInterface`, creates TUN, protects outbound sockets, and starts or restores the core. |
+| `SingBoxConfigBuilder` | Generates sing-box 1.13-compatible JSON from profiles and app settings. |
+| `ProxyManager` | Requests VPN permission and coordinates service start, stop, and restart. |
+| `RuntimeController` | Reads runtime state, connections, and logs, and switches selector profiles while running. |
+| `ConfigStore` | Persists profiles, subscriptions, DNS, rules, themes, language, and per-app settings. |
+| `SubscriptionManager` | Downloads subscriptions, tries multiple User-Agents, identifies URI / Clash / sing-box formats, and imports profiles. |
+| `RuleSetManager` | Manages available local rule-set files. |
+| `ui/` | Main screen, profiles, subscriptions, DNS, routing, per-app routing, diagnostics, and general settings. |
 
-## UI 设计系统
+## UI Design System
 
-页面样式不能通过零散硬编码维持。新增或调整 UI 时，请优先复用以下资源：
+Do not maintain page styling with scattered hard-coded values. Prefer these shared resources when adding or adjusting UI:
 
-| 文件 | 用途 |
+| File | Purpose |
 | --- | --- |
-| `app/src/main/res/values/colors.xml` | 语义颜色令牌；深色主题覆盖位于 `values-night/`。 |
-| `app/src/main/res/values/dimens.xml` | 间距、圆角、字号、Toolbar、触控区和列表行尺寸。 |
-| `app/src/main/res/values/styles.xml` | 卡片、按钮、输入框、搜索框、设置行、开关、文本和弹窗主题。 |
-| `app/src/main/kotlin/com/andrew/proxyapp/ui/ChoiceSheet.kt` | DNS 与通用设置共用的底部单选组件。 |
+| `app/src/main/res/values/colors.xml` | Semantic color tokens; dark-theme overrides are in `values-night/`. |
+| `app/src/main/res/values/dimens.xml` | Spacing, corner radii, typography, toolbar, touch targets, and list-row dimensions. |
+| `app/src/main/res/values/styles.xml` | Card, button, input, search, settings-row, switch, text, and dialog themes. |
+| `app/src/main/kotlin/com/andrew/proxyapp/ui/ChoiceSheet.kt` | Shared bottom single-choice component for DNS and general settings. |
 
-常用页面应使用 `Widget.Pulse.*` 组件样式，颜色使用 `@color/...` 语义资源，尺寸使用 `@dimen/...`。不要在布局或 Kotlin 中重复写通用颜色、圆角、字号和边距。
+Use `Widget.Pulse.*` styles, `@color/...` semantic resources, and `@dimen/...` dimensions on regular pages. Do not duplicate common colors, corner radii, text sizes, or spacing in layouts or Kotlin code.
 
-## 测试与质量检查
+## Tests and Quality Checks
 
-在提交前执行：
+Before committing:
 
 ```powershell
 cmd /c ".\gradlew testDebugUnitTest lintDebug --no-daemon --no-build-cache"
 ```
 
-需要产出可安装包时再执行完整构建：
+For an installable package, run the complete build:
 
 ```powershell
 cmd /c ".\gradlew clean assembleDebug --no-daemon --no-build-cache"
 ```
 
-请在至少一台 `arm64-v8a` 真机上检查：VPN 授权、启动/停止、切换节点、订阅导入、DNS 编辑、按应用分流、深浅主题和弹窗圆角背景。
+On at least one real `arm64-v8a` device, check VPN authorization, start/stop, profile switching, subscription import, DNS editing, per-app routing, light/dark themes, and the rounded dialog background.
 
-## 常见问题
+## Troubleshooting
 
-### 编译时报找不到 `io.nekohasekai.libbox`
+### `io.nekohasekai.libbox` cannot be found during compilation
 
-通常是没有下载 AAR，或文件不在 `app/libs/libbox.aar`。重新执行“获取 `libbox.aar`”步骤后执行 Gradle Sync / 重新构建。
+The AAR is usually missing or is not at `app/libs/libbox.aar`. Repeat the “Get `libbox.aar`” section, then sync Gradle or rebuild.
 
-### 修改代码后 APK 看起来仍是旧版本
+### The APK still contains old code after a change
 
-本项目要求使用 `--no-build-cache`。优先使用 `build-arm64.bat`，它已包含 `clean` 和该参数。
+This project requires `--no-build-cache`. Prefer `build-arm64.bat`, which includes `clean` and this flag.
 
-### VPN 已连接但所有流量无法访问
+### VPN is connected but no traffic can reach the network
 
-先查看诊断日志。常见原因包括节点不可用、网络未授权、DNS 配置不通或 libbox 无法识别物理网卡。`TunnelService.getInterfaces()`、`autoDetectInterfaceControl()` 和 `protect()` 的返回行为不能随意简化，否则可能出现 `no available network interface` 或出站回环。
+Start with the diagnostic logs. Common causes include an unavailable profile, missing network permission, invalid DNS configuration, or libbox failing to identify the physical network interface. Do not simplify the return behavior of `TunnelService.getInterfaces()`, `autoDetectInterfaceControl()`, or `protect()`, or you may get `no available network interface` or an outbound loop.
 
-### 订阅更新后显示 0 个节点
+### Subscription update reports zero profiles
 
-服务商可能根据 User-Agent 返回不同格式。应用会按 URI 列表、Clash YAML、sing-box JSON 自动识别；仍失败时请在诊断日志中检查响应格式、订阅可访问性和节点协议是否受当前内核支持。
+A provider may return different formats for different User-Agents. The app automatically identifies URI lists, Clash YAML, and sing-box JSON. If it still fails, inspect the response format, subscription reachability, and whether the profile protocol is supported by the current core in the diagnostic log.
 
-### 更新 libbox 后无法编译或启动
+### The app cannot compile or start after updating libbox
 
-不要只替换 AAR。先核对新版本的 `PlatformInterface` 方法签名、sing-box JSON 配置迁移说明和所需 feature tags，再同步更新 `TunnelService`、`SingBoxConfigBuilder` 与测试。
+Do not only replace the AAR. First check the new `PlatformInterface` method signatures, sing-box JSON migration notes, and required feature tags. Then update `TunnelService`, `SingBoxConfigBuilder`, and tests together.
 
-## 安全与仓库卫生
+## Security and Repository Hygiene
 
-- `.gitignore` 会忽略 `libbox.aar`、keystore、签名属性、本机 SDK、构建输出、日志、截图以及本地维护文档。
-- `AGENTS.md` 是本地维护上下文，可能含开发环境或签名信息，不能提交到公开仓库。
-- 从前曾经提交过敏感文件时，仅修改 `.gitignore` 不会移除 Git 历史；应立即轮换凭据，并使用 `git rm --cached <文件>` 停止后续跟踪。
-- 使用 sing-box / libbox 时，请遵守其上游许可证及所在地适用的法律、网络和服务条款。
+- `.gitignore` excludes `libbox.aar`, keystores, signing properties, local SDKs, build outputs, logs, screenshots, and local maintenance documents.
+- `AGENTS.md` is local maintenance context and may contain development-environment or signing information; it must not be committed to the public repository.
+- If a sensitive file was previously committed, changing `.gitignore` does not remove it from Git history. Rotate the credential immediately and use `git rm --cached <file>` to stop future tracking.
+- When using sing-box / libbox, follow the upstream license and all laws, network policies, and service terms applicable to your location.

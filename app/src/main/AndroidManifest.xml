@@ -40,6 +40,11 @@
         </activity>
 
         <activity
+            android:name=".ui.LanguageSelectionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Pulse" />
+
+        <activity
             android:name=".ui.ConfigListActivity"
             android:exported="false"
             android:label="@string/config_manager"

@@ -19,8 +19,8 @@ android {
         applicationId = "com.andrew.proxyapp"
         minSdk = 26           // sing-box libbox 要求 API 26+
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // 仅构建 arm64-v8a 架构（ARMv8 / 64位），减小 APK 体积并加快编译
         ndk {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="supported_language_tags">
+        <item>en</item>
+        <item>zh-CN</item>
+        <item>ru</item>
+        <item>fa</item>
+        <item>az</item>
+        <item>ar</item>
+    </string-array>
+</resources>

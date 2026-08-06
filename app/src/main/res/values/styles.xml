@@ -54,6 +54,28 @@
         <item name="android:textColor">@color/text_secondary</item>
     </style>
 
+    <style name="TextAppearance.Pulse.OnboardingTitle" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:textSize">@dimen/text_onboarding_title</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:fontFamily">sans</item>
+    </style>
+
+    <style name="TextAppearance.Pulse.OnboardingSubtitle" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">@dimen/text_onboarding_subtitle</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <style name="Widget.Pulse.LanguageOption" parent="Widget.Material3.CompoundButton.RadioButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/onboarding_option_height</item>
+        <item name="android:layout_marginBottom">@dimen/space_xs</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingHorizontal">@dimen/space_md</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="buttonTint">@color/colorPrimary</item>
+    </style>
+
     <style name="Widget.Pulse.Button" parent="Widget.Material3.Button">
         <item name="cornerRadius">@dimen/corner_pill</item>
         <item name="android:minHeight">@dimen/touch_target</item>

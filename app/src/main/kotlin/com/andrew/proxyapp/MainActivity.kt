@@ -27,6 +27,7 @@ import com.andrew.proxyapp.ui.DnsActivity
 import com.andrew.proxyapp.ui.DiagnosticsActivity
 import com.andrew.proxyapp.ui.EditConfigActivity
 import com.andrew.proxyapp.ui.GeneralSettingsActivity
+import com.andrew.proxyapp.ui.LanguageSelectionActivity
 import com.andrew.proxyapp.ui.PerAppActivity
 import com.andrew.proxyapp.ui.SettingsActivity
 import com.andrew.proxyapp.ui.configureSystemBars
@@ -51,6 +52,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (!store.getSettings().languageSelectionCompleted) {
+            startActivity(Intent(this, LanguageSelectionActivity::class.java))
+            finish()
+            return
+        }
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         configureSystemBars()

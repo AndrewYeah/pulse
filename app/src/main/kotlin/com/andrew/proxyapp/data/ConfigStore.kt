@@ -50,12 +50,13 @@ data class AppSettings(
     var lastRuleSetCheck: Long = 0,
     var testUrl: String = "https://www.gstatic.com/generate_204",
     var language: String = "zh-CN",
+    var languageSelectionCompleted: Boolean = false,
 
     // 当前选中的配置 ID
     var activeConfigId: String = ""
 )
 
-const val CURRENT_SETTINGS_SCHEMA = 5
+const val CURRENT_SETTINGS_SCHEMA = 6
 
 object ConfigurationChanges {
     private val _events = MutableSharedFlow<Unit>(
@@ -228,6 +229,11 @@ class ConfigStore private constructor(context: Context) : SubscriptionStore {
         }
         if (settings.schemaVersion < 5) {
             settings.skipCertVerify = false
+            changed = true
+        }
+        if (settings.schemaVersion < 6) {
+            // Existing installations already have a language preference; do not show onboarding after upgrade.
+            settings.languageSelectionCompleted = true
             changed = true
         }
         if (settings.schemaVersion < CURRENT_SETTINGS_SCHEMA) {
