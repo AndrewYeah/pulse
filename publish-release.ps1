@@ -102,8 +102,8 @@ Write-Host "libbox.aar SHA-256: $AarHash"
 $OldGradleOpts = $env:GRADLE_OPTS
 $env:GRADLE_OPTS = "-Xmx4g -XX:MaxMetaspaceSize=512m"
 try {
-    Write-Host "Building signed Release APK..." -ForegroundColor Yellow
-    $GradleCommand = "`"$GradleWrapper`" clean assembleRelease --no-daemon --no-build-cache"
+    Write-Host "Running tests, lint, and signed Release build..." -ForegroundColor Yellow
+    $GradleCommand = "`"$GradleWrapper`" clean testDebugUnitTest lintDebug assembleRelease --no-daemon --no-build-cache"
     & cmd.exe /d /c $GradleCommand
     if ($LASTEXITCODE -ne 0) {
         Stop-Publish "Release build failed ($LASTEXITCODE)"

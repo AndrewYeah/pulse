@@ -218,7 +218,7 @@ app/build/outputs/apk/release/app-release.apk
 仓库提供了 `publish-release.bat` 一键发布入口。它会依次执行：
 
 1. 检查工作区、版本号、`libbox.aar` 和本地签名文件。
-2. 使用 `clean assembleRelease --no-build-cache` 构建签名 APK。
+2. 使用 `clean testDebugUnitTest lintDebug assembleRelease --no-build-cache` 运行单元测试、完整 Lint 并构建签名 APK。
 3. 验证 APK 签名，并确认只包含 `arm64-v8a` 和 `libbox.so`。
 4. 推送当前分支到 `origin`。
 5. 创建对应的 GitHub Release，并将 APK 作为附件上传。
@@ -256,6 +256,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\publish-release.ps1 -Draft
 - `keystore.properties`
 
 发布完成后，GitHub Release 页面会显示 APK 下载地址和 SHA-256。若 tag 已存在、版本号与 Gradle 不一致、签名校验失败或工作区有未提交改动，脚本会停止，不会覆盖已有 Release。
+
+### 手动运行 GitHub Actions
+
+GitHub Actions 不会在普通 push 或 pull request 时自动运行，避免重复远程构建和通知邮件。需要验证仓库能否在全新 Linux 环境从零构建时：
+
+1. 打开 GitHub 仓库的 `Actions` 页面。
+2. 选择 `Android checks`。
+3. 点击 `Run workflow`，选择要验证的分支。
+4. 再次点击 `Run workflow` 确认。
+
+该手动任务会在 GitHub 临时环境中下载并校验 `libbox.aar`，然后运行单元测试、Lint 和 Debug 构建；它不会接触本地 Release keystore，也不会发布 APK。
 
 ## 项目结构
 
