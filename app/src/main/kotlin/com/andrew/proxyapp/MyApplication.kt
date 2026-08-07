@@ -6,9 +6,18 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.andrew.proxyapp.data.ConfigStore
 import com.andrew.proxyapp.data.RuleSetManager
 import com.andrew.proxyapp.data.ThemeMode
+import com.andrew.proxyapp.manager.AppUpdateManager
+import com.andrew.proxyapp.manager.ConfigStoreUpdateStore
 import com.andrew.proxyapp.manager.RuleSetUpdateWorker
 
 class MyApplication : Application() {
+
+    val appUpdateManager: AppUpdateManager by lazy {
+        AppUpdateManager(
+            currentVersion = BuildConfig.VERSION_NAME,
+            store = ConfigStoreUpdateStore(ConfigStore.get(this))
+        )
+    }
 
     override fun onCreate() {
         super.onCreate()

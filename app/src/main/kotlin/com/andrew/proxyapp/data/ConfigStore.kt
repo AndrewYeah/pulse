@@ -53,10 +53,14 @@ data class AppSettings(
     var languageSelectionCompleted: Boolean = false,
 
     // 当前选中的配置 ID
-    var activeConfigId: String = ""
+    var activeConfigId: String = "",
+
+    // GitHub Release update notice cache
+    var availableUpdateVersion: String = "",
+    var availableUpdateUrl: String = ""
 )
 
-const val CURRENT_SETTINGS_SCHEMA = 6
+const val CURRENT_SETTINGS_SCHEMA = 7
 
 object ConfigurationChanges {
     private val _events = MutableSharedFlow<Unit>(
@@ -236,6 +240,11 @@ class ConfigStore private constructor(context: Context) : SubscriptionStore {
             settings.languageSelectionCompleted = true
             changed = true
         }
+        if (settings.schemaVersion < 7) {
+            settings.availableUpdateVersion = ""
+            settings.availableUpdateUrl = ""
+            changed = true
+        }
         if (settings.schemaVersion < CURRENT_SETTINGS_SCHEMA) {
             settings.schemaVersion = CURRENT_SETTINGS_SCHEMA
             changed = true
@@ -262,6 +271,33 @@ class ConfigStore private constructor(context: Context) : SubscriptionStore {
         update(settings)
         saveSettings(settings, notifyRuntime)
         return settings
+    }
+
+    @Synchronized
+    fun getAvailableUpdate(): AppUpdateInfo? {
+        val settings = getSettings()
+        if (settings.availableUpdateVersion.isBlank() || settings.availableUpdateUrl.isBlank()) return null
+        return AppUpdateInfo(
+            version = settings.availableUpdateVersion,
+            releaseUrl = settings.availableUpdateUrl
+        )
+    }
+
+    @Synchronized
+    fun saveAvailableUpdate(update: AppUpdateInfo) {
+        updateSettings(notifyRuntime = false) {
+            it.availableUpdateVersion = update.version
+            it.availableUpdateUrl = update.releaseUrl
+        }
+    }
+
+    @Synchronized
+    fun clearAvailableUpdate() {
+        val settings = getSettings()
+        if (settings.availableUpdateVersion.isBlank() && settings.availableUpdateUrl.isBlank()) return
+        settings.availableUpdateVersion = ""
+        settings.availableUpdateUrl = ""
+        saveSettings(settings, notifyRuntime = false)
     }
 
     // ========== Subscription 管理 ==========

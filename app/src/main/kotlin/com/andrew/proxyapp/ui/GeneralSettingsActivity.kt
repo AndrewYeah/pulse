@@ -2,6 +2,9 @@ package com.andrew.proxyapp.ui
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -11,21 +14,41 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
+import com.andrew.proxyapp.MyApplication
 import com.andrew.proxyapp.R
+import com.andrew.proxyapp.data.AppUpdateInfo
 import com.andrew.proxyapp.data.ConfigStore
 import com.andrew.proxyapp.data.ThemeMode
+import com.andrew.proxyapp.manager.AppUpdateState
+import com.andrew.proxyapp.manager.ReleaseCheckResult
+import com.andrew.proxyapp.manager.ReleaseUpdateChecker
 import com.andrew.proxyapp.manager.RuntimeController
 import com.andrew.proxyapp.manager.BatteryOptimization
+import kotlinx.coroutines.launch
 
 class GeneralSettingsActivity : AppCompatActivity() {
     private val store by lazy { ConfigStore.get(this) }
+    private val appUpdateManager by lazy { (application as MyApplication).appUpdateManager }
+    private lateinit var updateRow: View
+    private lateinit var updateLabel: TextView
+    private lateinit var updateBadge: View
+    private var manualCheckInProgress = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_general_settings)
         configureSystemBars()
         findViewById<Toolbar>(R.id.toolbar).setNavigationOnClickListener { finish() }
+        updateRow = findViewById(R.id.btnCheckUpdate)
+        updateLabel = findViewById(R.id.tvCheckUpdate)
+        updateBadge = findViewById(R.id.updateBadge)
+        updateRow.setOnClickListener { handleUpdateClick() }
+        observeUpdateState()
         val settings = store.getSettings()
         val themes = listOf(getString(R.string.theme_system), getString(R.string.theme_light), getString(R.string.theme_dark))
         val languages = listOf(
@@ -82,6 +105,79 @@ class GeneralSettingsActivity : AppCompatActivity() {
         findViewById<android.view.View>(R.id.btnLatency).setOnClickListener { RuntimeController.testAllNodes(); Snackbar.make(findViewById(R.id.btnLatency), R.string.latency_check, Snackbar.LENGTH_SHORT).show() }
         findViewById<android.view.View>(R.id.btnAbout).setOnClickListener { showInfo(getString(R.string.about), getString(R.string.about_message)) }
     }
+
+    private fun observeUpdateState() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                appUpdateManager.state.collect(::renderUpdateState)
+            }
+        }
+    }
+
+    private fun renderUpdateState(state: AppUpdateState) {
+        val available = when (state) {
+            is AppUpdateState.Available -> state.update
+            is AppUpdateState.Checking -> state.cachedUpdate
+            else -> null
+        }
+        updateBadge.visibility = if (available == null) View.GONE else View.VISIBLE
+        updateRow.contentDescription = if (available == null) {
+            getString(R.string.check_for_updates)
+        } else {
+            getString(R.string.update_available_content_description, available.version)
+        }
+        if (!manualCheckInProgress) updateLabel.setText(R.string.check_for_updates)
+    }
+
+    private fun handleUpdateClick() {
+        appUpdateManager.availableUpdateOrNull()?.let {
+            showUpdateDialog(it)
+            return
+        }
+        if (manualCheckInProgress) return
+
+        manualCheckInProgress = true
+        updateRow.isEnabled = false
+        updateLabel.setText(R.string.checking_for_updates)
+        lifecycleScope.launch {
+            val result = runCatching { appUpdateManager.checkNow().await() }
+                .getOrElse { ReleaseCheckResult.Failed(it) }
+            manualCheckInProgress = false
+            updateRow.isEnabled = true
+            renderUpdateState(appUpdateManager.state.value)
+            when (result) {
+                is ReleaseCheckResult.Available -> showUpdateDialog(result.update)
+                ReleaseCheckResult.UpToDate ->
+                    Snackbar.make(updateRow, R.string.up_to_date, Snackbar.LENGTH_SHORT).show()
+                is ReleaseCheckResult.Failed ->
+                    Snackbar.make(updateRow, R.string.update_check_failed, Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun showUpdateDialog(update: AppUpdateInfo) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.update_available_title)
+            .setMessage(getString(R.string.update_download_prompt, update.version))
+            .setPositiveButton(R.string.download_update) { _, _ -> openReleasePage(update.releaseUrl) }
+            .setNegativeButton(R.string.later, null)
+            .show()
+    }
+
+    private fun openReleasePage(url: String) {
+        if (!ReleaseUpdateChecker.isValidReleaseUrl(url)) {
+            Snackbar.make(updateRow, R.string.release_page_unavailable, Snackbar.LENGTH_LONG).show()
+            return
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (_: ActivityNotFoundException) {
+            Snackbar.make(updateRow, R.string.release_page_unavailable, Snackbar.LENGTH_LONG).show()
+        } catch (_: SecurityException) {
+            Snackbar.make(updateRow, R.string.release_page_unavailable, Snackbar.LENGTH_LONG).show()
+        }
+    }
+
     private fun showBatteryGuidance() {
         val guidance = BatteryOptimization.guidance(this)
         val status = if (guidance.isIgnoringOptimizations) {

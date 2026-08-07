@@ -39,7 +39,9 @@ import java.util.Locale
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val store by lazy { ConfigStore.get(this) }
+    private val appUpdateManager by lazy { (application as MyApplication).appUpdateManager }
     private var lastTunnelState: TunnelService.TunnelState? = null
+    private var startupUpdateHintShown = false
 
     private val configLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         updateActiveConfigDisplay()
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         ) notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         setupUi()
         observeState()
+        if (savedInstanceState == null) startStartupUpdateCheck()
     }
 
     override fun onResume() {
@@ -123,6 +126,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun openProfiles() = configLauncher.launch(Intent(this, ConfigListActivity::class.java))
+
+    private fun startStartupUpdateCheck() {
+        appUpdateManager.availableUpdateOrNull()?.let { showStartupUpdateHint(it.version) }
+        val check = appUpdateManager.checkOnStartup()
+        lifecycleScope.launch {
+            runCatching { check.await() }
+            if (!startupUpdateHintShown) {
+                appUpdateManager.availableUpdateOrNull()?.let { showStartupUpdateHint(it.version) }
+            }
+        }
+    }
+
+    private fun showStartupUpdateHint(version: String) {
+        if (startupUpdateHintShown || isFinishing || isDestroyed) return
+        startupUpdateHintShown = true
+        Snackbar.make(
+            binding.root,
+            getString(R.string.update_available_hint, version),
+            Snackbar.LENGTH_SHORT
+        ).setAction(R.string.open_settings) {
+            startActivity(Intent(this, GeneralSettingsActivity::class.java))
+        }.setDuration(1_800).show()
+    }
 
     private fun observeState() {
         lifecycleScope.launch {

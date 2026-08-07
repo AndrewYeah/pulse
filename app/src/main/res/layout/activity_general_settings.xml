@@ -134,6 +134,34 @@
                             android:contentDescription="@string/test_url"
                             android:src="@drawable/ic_chevron_right" />
                     </LinearLayout>
+
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/divider" />
+
+                    <LinearLayout
+                        android:id="@+id/btnCheckUpdate"
+                        style="@style/Widget.Pulse.SettingsRow"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tvCheckUpdate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/check_for_updates"
+                            android:textAppearance="@style/TextAppearance.Pulse.Body" />
+                        <View
+                            android:id="@+id/updateBadge"
+                            android:layout_width="@dimen/update_badge_size"
+                            android:layout_height="@dimen/update_badge_size"
+                            android:layout_marginEnd="@dimen/space_sm"
+                            android:background="@drawable/update_badge"
+                            android:importantForAccessibility="no"
+                            android:visibility="gone" />
+                        <ImageView
+                            android:layout_width="@dimen/icon_medium"
+                            android:layout_height="@dimen/icon_medium"
+                            android:contentDescription="@string/check_for_updates"
+                            android:src="@drawable/ic_chevron_right" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

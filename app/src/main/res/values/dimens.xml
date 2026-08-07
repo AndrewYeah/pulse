@@ -32,6 +32,7 @@
     <dimen name="list_row_min_height">72dp</dimen>
     <dimen name="icon_medium">24dp</dimen>
     <dimen name="icon_large">28dp</dimen>
+    <dimen name="update_badge_size">8dp</dimen>
     <dimen name="dialog_window_inset">16dp</dimen>
     <dimen name="dialog_content_inset">32dp</dimen>
     <dimen name="page_horizontal_inset">16dp</dimen>
