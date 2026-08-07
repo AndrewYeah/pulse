@@ -49,6 +49,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.collectLatest
+import java.net.Inet4Address
+import java.net.Inet6Address
+import java.net.InterfaceAddress
 
 /**
  * TunnelService - VPN 隧道服务（基于官方 sing-box libbox 1.13.x API）
@@ -525,8 +528,10 @@ class TunnelService : VpnService(), PlatformInterface, CommandServerHandler {
                     libNi.setIndex(ni.index)
                     libNi.setMTU(ni.mtu)
                     libNi.setType(interfaceType(ni.name))
-                    val addrIter = StringListIterator(ni.interfaceAddresses.mapNotNull { it.address.hostAddress })
-                    libNi.setAddresses(addrIter)
+                    val addresses = ni.interfaceAddresses.mapNotNull(::toLibboxAddressPrefix)
+                    libNi.setAddresses(StringListIterator(addresses))
+                    // libbox accepts an empty iterator, but not malformed address strings.
+                    libNi.setDNSServer(StringListIterator(emptyList()))
                     interfaces.add(libNi)
                     Log.i(TAG, "Found interface: ${ni.name} idx=${ni.index} mtu=${ni.mtu}")
                 }
@@ -644,4 +649,33 @@ private class NetworkInterfaceListIterator(private val items: List<io.nekohaseka
     private var index = 0
     override fun hasNext(): Boolean = index < items.size
     override fun next(): io.nekohasekai.libbox.NetworkInterface = items[index++]
+}
+
+/**
+ * libbox parses every interface address with netip.ParsePrefix, so a raw
+ * InetAddress value is unsafe. IPv6 link-local values also contain a Java
+ * scope suffix (for example, "%wlan0") which netip does not support.
+ */
+internal fun toLibboxAddressPrefix(interfaceAddress: InterfaceAddress): String? {
+    val address = interfaceAddress.address ?: return null
+    val addressBits = when (address) {
+        is Inet4Address -> 32
+        is Inet6Address -> 128
+        else -> return null
+    }
+    return formatLibboxAddressPrefix(
+        address.hostAddress,
+        interfaceAddress.networkPrefixLength.toInt(),
+        addressBits
+    )
+}
+
+internal fun formatLibboxAddressPrefix(
+    hostAddress: String?,
+    prefixLength: Int,
+    addressBits: Int
+): String? {
+    val address = hostAddress?.substringBefore('%')?.trim().orEmpty()
+    if (address.isBlank() || prefixLength !in 0..addressBits) return null
+    return "$address/$prefixLength"
 }
