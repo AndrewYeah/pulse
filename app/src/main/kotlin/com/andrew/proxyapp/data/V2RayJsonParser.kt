@@ -7,6 +7,15 @@ import org.json.JSONObject
 /** Parses V2Ray/Xray JSON without importing its inbounds, DNS, or routing. */
 object V2RayJsonParser {
     private const val TAG = "V2RayJsonParser"
+    private val NON_PROXY_OUTBOUNDS = setOf(
+        "direct",
+        "freedom",
+        "blackhole",
+        "dns",
+        "loopback",
+        "dokodemo-door",
+        "routing"
+    )
 
     fun parse(jsonText: String, subscriptionId: String): SubscriptionParseResult {
         return try {
@@ -20,6 +29,8 @@ object V2RayJsonParser {
                 )
             val nodes = mutableListOf<ProxyConfig>()
             val issues = mutableListOf<ParseIssue>()
+            val hasServerInbounds = root.optJSONArray("inbounds")?.length()?.let { it > 0 } == true ||
+                root.optJSONObject("inbound") != null
             for (i in 0 until outbounds.length()) {
                 val outbound = outbounds.optJSONObject(i)
                 if (outbound == null) {
@@ -31,7 +42,27 @@ object V2RayJsonParser {
             }
             val normalized = nodes.map { StandardNodeMapper.normalize(it, subscriptionId, SubscriptionFormat.V2RAY_JSON) }
             val result = StandardNodeMapper.result(normalized, SubscriptionFormat.V2RAY_JSON)
-            result.copy(issues = issues + result.issues)
+            val allIssues = issues + result.issues
+            val noClientNodeIssue = if (result.nodes.isEmpty() && allIssues.isEmpty()) {
+                if (hasServerInbounds) {
+                    ParseIssue(
+                        -1,
+                        "",
+                        "server_config_detected",
+                        "server-side V2Ray/Xray configuration detected; import a client URI or client configuration",
+                        true
+                    )
+                } else {
+                    ParseIssue(
+                        -1,
+                        "",
+                        "proxy_outbounds_missing",
+                        "V2Ray JSON contains no importable client proxy outbounds",
+                        true
+                    )
+                }
+            } else null
+            result.copy(issues = allIssues + listOfNotNull(noClientNodeIssue))
         } catch (error: Exception) {
             Log.e(TAG, "Failed to parse V2Ray JSON", error)
             SubscriptionParseResult(
@@ -49,7 +80,7 @@ object V2RayJsonParser {
         issues: MutableList<ParseIssue>
     ): List<ProxyConfig> {
         val type = outbound.optString("protocol", outbound.optString("type", "")).lowercase()
-        if (type in setOf("freedom", "blackhole", "dns", "loopback", "dokodemo-door", "routing")) return emptyList()
+        if (type in NON_PROXY_OUTBOUNDS) return emptyList()
         val settings = outbound.optJSONObject("settings") ?: JSONObject()
         val tag = outbound.optString("tag", "Node-${index + 1}")
         val nodes = mutableListOf<ProxyConfig>()

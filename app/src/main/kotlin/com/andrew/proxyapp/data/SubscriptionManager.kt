@@ -63,10 +63,7 @@ object SubscriptionManager {
             }
         }
         val result = when (detected) {
-            SubscriptionFormat.SING_BOX_JSON -> SubscriptionParseResult(
-                SubscriptionFormat.SING_BOX_JSON,
-                SingBoxJsonParser.parse(normalizedContent, subscriptionId)
-            )
+            SubscriptionFormat.SING_BOX_JSON -> SingBoxJsonParser.parseDetailed(normalizedContent, subscriptionId)
             SubscriptionFormat.V2RAY_JSON -> V2RayJsonParser.parse(normalizedContent, subscriptionId)
             SubscriptionFormat.CLASH_YAML -> parseClash(normalizedContent, subscriptionId)
             SubscriptionFormat.URI, SubscriptionFormat.BASE64_URI -> parseUriList(normalizedContent, subscriptionId)
@@ -93,7 +90,7 @@ object SubscriptionManager {
             try {
                 val result = parseDetailed(fetcher.fetch(url, ua), subscriptionId)
                 if (result.nodes.isNotEmpty()) return result
-                lastError = IOException("$ua returned no valid nodes")
+                lastError = IOException("$ua returned no valid nodes: ${result.issues.firstOrNull()?.message.orEmpty()}")
             } catch (error: Exception) {
                 if (error is CancellationException) throw error
                 lastError = error

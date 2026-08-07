@@ -12,22 +12,90 @@ import org.json.JSONObject
 object SingBoxJsonParser {
 
     private const val TAG = "SingBoxJsonParser"
+    private val NON_PROXY_OUTBOUNDS = setOf(
+        "direct", "block", "dns", "selector", "urltest", "compatible", "drop", "reject"
+    )
+    private val SUPPORTED_PROXY_OUTBOUNDS = setOf(
+        "vmess", "vless", "hysteria2", "tuic", "shadowsocks", "anytls", "trojan", "socks", "http"
+    )
 
-    fun parse(jsonText: String, subscriptionId: String): List<ProxyConfig> {
-        val nodes = mutableListOf<ProxyConfig>()
-        try {
+    fun parse(jsonText: String, subscriptionId: String): List<ProxyConfig> =
+        parseDetailed(jsonText, subscriptionId).nodes
+
+    fun parseDetailed(jsonText: String, subscriptionId: String): SubscriptionParseResult {
+        return try {
             val root = JSONObject(jsonText)
-            val outbounds = root.optJSONArray("outbounds") ?: return nodes
+            val hasServerInbounds = root.optJSONArray("inbounds")?.length()?.let { it > 0 } == true ||
+                root.optJSONObject("inbound") != null
+            val outbounds = root.optJSONArray("outbounds")
+                ?: return SubscriptionParseResult(
+                    SubscriptionFormat.SING_BOX_JSON,
+                    emptyList(),
+                    listOf(
+                        ParseIssue(
+                            -1,
+                            "",
+                            if (hasServerInbounds) "server_config_detected" else "outbounds_missing",
+                            if (hasServerInbounds) {
+                                "server-side sing-box configuration detected; import a client URI or client configuration"
+                            } else {
+                                "sing-box JSON has no outbounds"
+                            },
+                            true
+                        )
+                    )
+                )
+            val nodes = mutableListOf<ProxyConfig>()
+            val issues = mutableListOf<ParseIssue>()
             for (i in 0 until outbounds.length()) {
-                val obj = outbounds.optJSONObject(i) ?: continue
+                val obj = outbounds.optJSONObject(i)
+                if (obj == null) {
+                    issues += ParseIssue(i, "", "outbound_invalid", "outbound must be an object")
+                    continue
+                }
+                val type = obj.optString("type", "").lowercase()
+                val tag = obj.optString("tag", "Node-${i + 1}")
+                if (type in NON_PROXY_OUTBOUNDS) continue
+                if (type !in SUPPORTED_PROXY_OUTBOUNDS) {
+                    issues += ParseIssue(i, tag, "outbound_unsupported", "unsupported sing-box outbound: $type")
+                    continue
+                }
+                val server = obj.optString("server", "")
+                val port = obj.optInt("server_port", obj.optInt("port", 0))
+                if (server.isBlank() || port !in 1..65535) {
+                    issues += ParseIssue(i, tag, "outbound_invalid", "proxy outbound requires a valid server and port")
+                    continue
+                }
                 val config = parseOutbound(obj, subscriptionId) ?: continue
                 nodes.add(config)
             }
+            val noClientNodeIssue = if (nodes.isEmpty() && issues.isEmpty()) {
+                ParseIssue(
+                    -1,
+                    "",
+                    if (hasServerInbounds) "server_config_detected" else "proxy_outbounds_missing",
+                    if (hasServerInbounds) {
+                        "server-side sing-box configuration detected; import a client URI or client configuration"
+                    } else {
+                        "sing-box JSON contains no importable client proxy outbounds"
+                    },
+                    true
+                )
+            } else null
+            Log.i(TAG, "Parsed ${nodes.size} nodes from sing-box JSON")
+            SubscriptionParseResult(
+                SubscriptionFormat.SING_BOX_JSON,
+                nodes,
+                issues + listOfNotNull(noClientNodeIssue)
+            )
         } catch (e: Exception) {
             Log.e(TAG, "Failed to parse sing-box JSON: ${e.message}", e)
+            SubscriptionParseResult(
+                SubscriptionFormat.SING_BOX_JSON,
+                emptyList(),
+                listOf(ParseIssue(-1, "", "json_invalid", e.message ?: "invalid JSON", true))
+            )
         }
-        Log.i(TAG, "Parsed ${nodes.size} nodes from sing-box JSON")
-        return nodes
     }
 
     private fun parseOutbound(obj: JSONObject, subscriptionId: String): ProxyConfig? {
@@ -36,11 +104,6 @@ object SingBoxJsonParser {
         val server = obj.optString("server", "")
         val port = obj.optInt("server_port", obj.optInt("port", 0))
         if (server.isBlank() || port <= 0) return null
-
-        // 跳过非代理出站（direct/block/dns/selector/urltest）
-        if (type in listOf("direct", "block", "dns", "selector", "urltest", "compatible", "drop", "reject")) {
-            return null
-        }
 
         val config = ProxyConfig(
             name = tag,

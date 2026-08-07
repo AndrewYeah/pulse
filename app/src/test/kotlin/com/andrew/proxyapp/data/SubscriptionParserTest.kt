@@ -58,6 +58,7 @@ class SubscriptionParserTest {
               "inbounds": [{"protocol":"dokodemo-door"}],
               "routing": {"rules": []},
               "outbounds": [
+                {"tag":"direct","protocol":"direct","settings":{}},
                 {"tag":"vmess-reality","protocol":"vmess","settings":{"vnext":[{"address":"vmess.example.com","port":443,"users":[{"id":"00000000-0000-4000-8000-000000000000","alterId":0,"security":"auto"}]}]},"streamSettings":{"network":"tcp","security":"reality","realitySettings":{"serverName":"www.example.com","publicKey":"public-key","shortId":"short-id"}}},
                 {"tag":"trojan","protocol":"trojan","settings":{"servers":[{"address":"trojan.example.com","port":443,"password":"secret"}]},"streamSettings":{"network":"ws","security":"tls","tlsSettings":{"serverName":"trojan.example.com"},"wsSettings":{"path":"/ws","headers":{"Host":"trojan.example.com"}}}},
                 {"tag":"socks","protocol":"socks","settings":{"servers":[{"address":"127.0.0.1","port":1080,"users":[{"user":"u","pass":"p"}]}]}}
@@ -72,6 +73,72 @@ class SubscriptionParserTest {
         assertEquals("public-key", reality.realityPublicKey)
         assertEquals("short-id", reality.realityShortId)
         assertEquals(TransportType.WS, result.nodes.first { it.protocol == ProtocolType.TROJAN }.transportType)
+        assertTrue(result.issues.none { it.code == "outbound_unsupported" })
+    }
+
+    @Test
+    fun reportsServerConfigurationWhenOnlyDirectOutboundExists() {
+        val json = """
+            {
+              "inbounds": [{"tag":"proxy-in","protocol":"vless","settings":{"clients":[]}}],
+              "outbounds": [{"tag":"direct","protocol":"direct","settings":{}}]
+            }
+        """.trimIndent()
+
+        val result = SubscriptionManager.parseDetailed(json, "sub-server")
+
+        assertTrue(result.nodes.isEmpty())
+        assertTrue(result.issues.any { it.code == "server_config_detected" && it.fatal })
+        assertTrue(result.issues.none { it.code == "outbound_unsupported" })
+    }
+
+    @Test
+    fun reportsMissingProxyOutboundForDirectOnlyClientConfiguration() {
+        val json = """
+            {"outbounds":[{"tag":"direct","protocol":"direct","settings":{}}]}
+        """.trimIndent()
+
+        val result = SubscriptionManager.parseDetailed(json, "sub-direct")
+
+        assertTrue(result.nodes.isEmpty())
+        assertTrue(result.issues.any { it.code == "proxy_outbounds_missing" && it.fatal })
+    }
+
+    @Test
+    fun detectsSingBoxServerConfigurationInsteadOfMisclassifyingItAsV2Ray() {
+        val json = """
+            {
+              "inbounds": [{"type":"hysteria2","listen":"0.0.0.0","listen_port":443}],
+              "outbounds": [{"type":"direct","tag":"direct"}]
+            }
+        """.trimIndent()
+
+        val result = SubscriptionManager.parseDetailed(json, "sub-singbox-server")
+
+        assertEquals(SubscriptionFormat.SING_BOX_JSON, result.format)
+        assertTrue(result.nodes.isEmpty())
+        assertTrue(result.issues.any { it.code == "server_config_detected" && it.fatal })
+        assertTrue(result.issues.none { it.code == "outbound_unsupported" })
+    }
+
+    @Test
+    fun parsesSingBoxClientOutboundAfterIgnoringDirectOutbound() {
+        val json = """
+            {
+              "inbounds": [{"type":"tun","interface_name":"tun0"}],
+              "outbounds": [
+                {"type":"direct","tag":"direct"},
+                {"type":"hysteria2","tag":"node","server":"node.example.com","server_port":443,"password":"secret","tls":{"enabled":true,"server_name":"node.example.com"}}
+              ]
+            }
+        """.trimIndent()
+
+        val result = SubscriptionManager.parseDetailed(json, "sub-singbox-client")
+
+        assertEquals(SubscriptionFormat.SING_BOX_JSON, result.format)
+        assertEquals(1, result.nodes.size)
+        assertEquals(ProtocolType.HYSTERIA2, result.nodes.single().protocol)
+        assertTrue(result.issues.none { it.code == "outbound_unsupported" })
     }
 
     @Test

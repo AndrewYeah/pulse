@@ -1,5 +1,7 @@
 package com.andrew.proxyapp.data
 
+import org.json.JSONArray
+import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 
@@ -23,14 +25,27 @@ object SubscriptionFormatDetector {
         if (trimmed.isBlank()) return SubscriptionFormat.UNKNOWN
         if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
             return try {
-                val root = if (trimmed.startsWith("{")) org.json.JSONObject(trimmed) else null
+                val root = if (trimmed.startsWith("{")) JSONObject(trimmed) else null
+                    ?: return SubscriptionFormat.UNKNOWN
                 val outbounds = root?.optJSONArray("outbounds")
-                val first = outbounds?.optJSONObject(0)
-                if (root?.has("routing") == true || root?.has("inbounds") == true ||
-                    first?.has("protocol") == true || first?.has("settings") == true
-                ) {
-                    SubscriptionFormat.V2RAY_JSON
-                } else SubscriptionFormat.SING_BOX_JSON
+                val inbounds = root.optJSONArray("inbounds")
+                val singleOutbound = root.optJSONObject("outbound")
+                val singleInbound = root.optJSONObject("inbound")
+                val usesV2RaySchema = root.has("routing") ||
+                    outbounds.hasObjectWithAny("protocol", "settings", "streamSettings") ||
+                    inbounds.hasObjectWithAny("protocol", "settings", "streamSettings") ||
+                    singleOutbound.hasAny("protocol", "settings", "streamSettings") ||
+                    singleInbound.hasAny("protocol", "settings", "streamSettings")
+                val usesSingBoxSchema = root.has("route") ||
+                    outbounds.hasObjectWithAny("type") ||
+                    inbounds.hasObjectWithAny("type") ||
+                    singleOutbound.hasAny("type") ||
+                    singleInbound.hasAny("type")
+                when {
+                    usesV2RaySchema -> SubscriptionFormat.V2RAY_JSON
+                    usesSingBoxSchema -> SubscriptionFormat.SING_BOX_JSON
+                    else -> SubscriptionFormat.SING_BOX_JSON
+                }
             } catch (_: Exception) {
                 SubscriptionFormat.UNKNOWN
             }
@@ -39,6 +54,17 @@ object SubscriptionFormatDetector {
         if (trimmed.contains("://")) return SubscriptionFormat.URI
         return SubscriptionFormat.BASE64_URI
     }
+
+    private fun JSONArray?.hasObjectWithAny(vararg keys: String): Boolean {
+        if (this == null) return false
+        for (index in 0 until length()) {
+            if (optJSONObject(index).hasAny(*keys)) return true
+        }
+        return false
+    }
+
+    private fun JSONObject?.hasAny(vararg keys: String): Boolean =
+        this != null && keys.any(::has)
 }
 
 data class StandardTls(
